@@ -12,7 +12,7 @@ d_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1,
 pob_k = [100, 90, 20, 50, 80]
 
 % Indica si dos antenas comparten el mismo Bloque de Recursos. j {1..3N}. bool
-cocan_ij = [| 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+cocan_ij = [| 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             | 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 |]
 
 % Cantidad recursos asignados a la radiobase i. int
