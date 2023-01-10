@@ -78,3 +78,7 @@ array[i, k] of var bool lEl_ik;
 array[k] of var bool indDesSig_ik;
 
 %%%%%%%%%% Constraints %%%%%%%%%%
+
+% Radiobase cubre el punto
+constraint forall (bs in i, pt in k)
+    (lFlgCob_ik[bs, pt] = 1 <==> lSig_ik[bs, pt] > UmbCob);
