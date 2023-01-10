@@ -1,6 +1,6 @@
 % MiniZinc model for the VQF project
 
-%%%%% Input variables %%%%%
+%%%%%%%%%% Input variables %%%%%%%%%%
 
 % Número de estaciones base
 int N; 
@@ -38,7 +38,7 @@ float UmbCob;
 %Umbral que define el mínimo nivel permitido para la relación portadora interferencia (SINR) para cada servicio
 float UmbInterf; 
 
-%%%%% Decision variables %%%%%
+%%%%%%%%%% Decision variables %%%%%%%%%%
 
 % Número de antenas por estación base
 int P;
@@ -60,4 +60,21 @@ array[i, h] of var float Pot_ih;
 % Cantidad de población por Sector
 array[i] of var int Pob_j;
 
-%%%%% Data structures %%%%%
+%%%%%%%%%% Data structures %%%%%%%%%%
+
+% Indica si la radiobase i cubre el punto k
+array[i, k] of var bool lRbs_ik;
+% Si lRbs_ik, indica el índice de la antena que lo cubre
+array[i, k] of var int lAnt_ik;
+% Nivel de señal que desde la antena lAnt_ik llega al punto
+array[i, k] of var float lSig_ik;
+% Indica si lSig_ik supera el umbral de cobertura
+array[i, k] of var bool lFlgCob_ik;
+% Ángulo de azimut con el que la antena lAnt_ik incide en el punto k
+array[i, k] of var bool lAz_ik;
+% Ángulo de elevación con el que la antena lAnt_ik incide en el punto k
+array[i, k] of var bool lEl_ik;
+% Índice de la radiobase que brinda el nivel de señal más alto en el punto k
+array[k] of var bool indDesSig_ik;
+
+%%%%%%%%%% Constraints %%%%%%%%%%
