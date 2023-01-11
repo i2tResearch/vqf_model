@@ -1,6 +1,6 @@
 % MiniZinc model for the VQF project
 
-%%%%%%%%%% Input variables %%%%%%%%%%
+%%%%%%%%%% Variables de Entrada %%%%%%%%%%
 
 % Número de estaciones base
 int N; 
@@ -38,7 +38,7 @@ float UmbCob;
 %Umbral que define el mínimo nivel permitido para la relación portadora interferencia (SINR) para cada servicio
 float UmbInterf; 
 
-%%%%%%%%%% Decision variables %%%%%%%%%%
+%%%%%%%%%% Variables de Decisión %%%%%%%%%%
 
 % Número de antenas por estación base
 int P;
@@ -60,33 +60,46 @@ array[i, h] of var float Pot_ih;
 % Cantidad de población por Sector
 array[i] of var int Pob_j;
 
-%%%%%%%%%% Data structures %%%%%%%%%%
+%%%%%%%%%% Estructuras de Datos %%%%%%%%%%
 
 % Indica si la radiobase i cubre el punto k
 array[i, k] of var bool lRbs_ik;
+
 % Si lRbs_ik, indica el índice de la antena que lo cubre
 array[i, k] of var int lAnt_ik;
+
 % Nivel de señal que desde la antena lAnt_ik llega al punto
 array[i, k] of var float lSig_ik;
+
 % Indica si lSig_ik supera el umbral de cobertura
 array[i, k] of var bool lFlgCob_ik;
+
 % Ángulo de azimut con el que la antena lAnt_ik incide en el punto k
 array[i, k] of var float lAz_ik;
+
 % Ángulo de elevación con el que la antena lAnt_ik incide en el punto k
 array[i, k] of var float lEl_ik;
+
 % Índice de la radiobase que brinda el nivel de señal más alto en el punto k
 array[k] of var int indDesSig_k;
 
-%%%%%%%%%% Constraints %%%%%%%%%%
+%%%%%%%%%% Restricciones %%%%%%%%%%
 
 % Radiobase cubre el punto
 constraint forall (bs in i, pt in k)
     (lFlgCob_ik[bs, pt] = 1 <==> lSig_ik[bs, pt] > UmbCob);
 
 % El nivel de señal correspondiente al índice de la señal deseada debe ser el mayor de ellos
-constraint forall (bs in i, pt in k)
-    (indDesSig_k[pt] == arg_max(lSig_ik[bs]));
+constraint forall (bs in i, pt in k) 
+    (indDesSig_k[pt] == arg_max(lSig_ik[.., pt]));
 
 % Sector cubre punto si y solo si el nivel de señal que de ella llega al punto supera el umbral
 constraint forall (bs in i, pt in k)
     (lFlgCob_ik[bs, pt] = 1 <==> lSig_ik[bs, pt] > UmbCob);
+
+% Cardinalidad del active set: total de puntos cubiertos
+constraint sum(lFlgCob_ik) <= maxSol;
+constraint forall (bs in i, pt in k)
+    (min(lFlgCob_ik[.., pt]) = 1 <==> sum(lFlgCob_ik) >= minSol);
+
+%%%%%%%%%% Función objetivo %%%%%%%%%%
