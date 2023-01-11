@@ -3,40 +3,40 @@
 %%%%%%%%%% Variables de Entrada %%%%%%%%%%
 
 % Número de estaciones base
-int N; 
+int N;
 % Índice de estaciones base
-set of int: i = 1..N; 
+set of int: i = 1..N;
 
 % Número de puntos en los que se harán mediciones de señal
-int M; 
+int M;
 % Índice de puntos de medición
-set of int: k = 1..M; 
+set of int: k = 1..M;
 
 % Distancia entre la i-ésima estación base y el k-ésimo punto de medición
-array[i, k] of var float: d_ik; 
+array[i, k] of var float: d_ik;
 
 % Población que demanda servicio en el punto k
-array[k] of var int: pob_k; 
+array[k] of var int: pob_k;
 
 % Índice de antenas
-set of int: j = 1..3*N; 
-% Indica si dos antenas comparten el mismo Bloque de Recursos
-array[i, j] of var bool: cocan_ij; 
+set of int: j = 1..3*N;
+% Indica si dos antenas comparten el mismo Bloque de Recursos. bool as int
+array[i, j] of var int: cocan_ij;
 
 % Cantidad recursos asignados a la radiobase i
-array[i] of var int: channels; 
+array[i] of var int: channels;
 
 % Número de Sectores disponibles para prestar el servicio
-int maxSol; 
+int maxSol;
 
 % Número mínimo de sectores que deberían poder atender el servicio
-int minSol; 
+int minSol;
 
 % Umbral a partir del cual se puede definir si un punto tiene o no cobertura, dado en dBm
-float UmbCob; 
+float UmbCob;
 
-%Umbral que define el mínimo nivel permitido para la relación portadora interferencia (SINR) para cada servicio
-float UmbInterf; 
+% Umbral que define el mínimo nivel permitido para la relación portadora interferencia (SINR) para cada servicio
+float UmbInterf;
 
 %%%%%%%%%% Variables de Decisión %%%%%%%%%%
 
@@ -45,8 +45,8 @@ int P;
 % Índice de antenas
 set of int: h = 1..P;
 
-% Flag que indica si el punto k tiene cobertura de alguna radiobase
-array[k] of var bool: C_k;
+% Flag que indica si el punto k tiene cobertura de alguna radiobase. bool as int
+array[k] of var int: C_k;
 
 % Azimuth de la h-ésima antena
 array[i, h] of var float AzAnt_ih;
@@ -62,8 +62,8 @@ array[i] of var int Pob_j;
 
 %%%%%%%%%% Estructuras de Datos %%%%%%%%%%
 
-% Indica si la radiobase i cubre el punto k
-array[i, k] of var bool lRbs_ik;
+% Indica si la radiobase i cubre el punto k. bool as int
+array[i, k] of var int lRbs_ik;
 
 % Si lRbs_ik, indica el índice de la antena que lo cubre
 array[i, k] of var int lAnt_ik;
@@ -71,8 +71,8 @@ array[i, k] of var int lAnt_ik;
 % Nivel de señal que desde la antena lAnt_ik llega al punto
 array[i, k] of var float lSig_ik;
 
-% Indica si lSig_ik supera el umbral de cobertura
-array[i, k] of var bool lFlgCob_ik;
+% Indica si lSig_ik supera el umbral de cobertura. bool as int
+array[i, k] of var int lFlgCob_ik;
 
 % Ángulo de azimut con el que la antena lAnt_ik incide en el punto k
 array[i, k] of var float lAz_ik;

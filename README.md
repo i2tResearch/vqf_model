@@ -5,6 +5,8 @@ MiniZinc model and Python modules for the VQF project.
 ## Developer notes
 
 * Some comments and variable names are in spanish because the model was designed that way. Do not change them.
+* MiniZinc does not convert bool to int directly. We need to sum booleans, so we represent them as integers 1 (true) or 0 (false).
+    * You will find the note "bool as int" in the comments.
 
 ## Docs and resources
 
