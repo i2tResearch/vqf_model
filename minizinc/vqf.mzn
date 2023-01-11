@@ -71,14 +71,22 @@ array[i, k] of var float lSig_ik;
 % Indica si lSig_ik supera el umbral de cobertura
 array[i, k] of var bool lFlgCob_ik;
 % Ángulo de azimut con el que la antena lAnt_ik incide en el punto k
-array[i, k] of var bool lAz_ik;
+array[i, k] of var float lAz_ik;
 % Ángulo de elevación con el que la antena lAnt_ik incide en el punto k
-array[i, k] of var bool lEl_ik;
+array[i, k] of var float lEl_ik;
 % Índice de la radiobase que brinda el nivel de señal más alto en el punto k
-array[k] of var bool indDesSig_ik;
+array[k] of var int indDesSig_k;
 
 %%%%%%%%%% Constraints %%%%%%%%%%
 
 % Radiobase cubre el punto
+constraint forall (bs in i, pt in k)
+    (lFlgCob_ik[bs, pt] = 1 <==> lSig_ik[bs, pt] > UmbCob);
+
+% El nivel de señal correspondiente al índice de la señal deseada debe ser el mayor de ellos
+constraint forall (bs in i, pt in k)
+    (indDesSig_k[pt] == arg_max(lSig_ik[bs]));
+
+% Sector cubre punto si y solo si el nivel de señal que de ella llega al punto supera el umbral
 constraint forall (bs in i, pt in k)
     (lFlgCob_ik[bs, pt] = 1 <==> lSig_ik[bs, pt] > UmbCob);
