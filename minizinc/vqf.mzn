@@ -65,7 +65,7 @@ array[i] of var int Pob_j;
 % Indica si la radiobase i cubre el punto k. bool as int
 array[i, k] of var int lRbs_ik;
 
-% Si lRbs_ik, indica el índice de la antena que lo cubre
+% Si lRbs_ik, indica el índice h de la antena que lo cubre
 array[i, k] of var int lAnt_ik;
 
 % Nivel de señal que desde la antena lAnt_ik llega al punto
