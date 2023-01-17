@@ -16,6 +16,7 @@ var 1.0..10000.0: resp_d;
 var 1..1000: resp_pob;
 array[i] of var int: max_k_index;
 array[k] of var int: max_i_index;
+array[k] of var int: iif;
 
 constraint resp_d = sum(ind_i in i, ind_k in k)(d_ik[ind_i, ind_k]);
 
@@ -26,5 +27,8 @@ constraint forall(ind_i in i)
   
 constraint forall(ind_k in k)
   (max_i_index[ind_k] = arg_max(d_ik[.., ind_k]));
+  
+constraint forall(ind_k in k)
+  (iif[ind_k] = if ind_k > 2 then 1 else 0 endif);
 
 solve satisfy;
