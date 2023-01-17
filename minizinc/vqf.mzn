@@ -102,3 +102,7 @@ constraint sum(ind_i in i, ind_k in k)(lFlgCob_ik[ind_i, ind_k]) <= maxSol;
 
 constraint forall (ind_k in k)
     (min(lFlgCob_ik[.., ind_k]) = 1 <==> sum(ind_i in i)(lFlgCob_ik[ind_i, ind_k]) >= minSol);
+
+%%%%%%%%%%%%%%%%%%%% Objetivo %%%%%%%%%%%%%%%%%%%%
+
+solve satisty;
