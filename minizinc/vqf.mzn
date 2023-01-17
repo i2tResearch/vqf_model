@@ -1,6 +1,6 @@
 % MiniZinc model for the VQF project
 
-%%%%%%%%%% Variables de Entrada %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Variables de Entrada %%%%%%%%%%%%%%%%%%%%
 
 % Número de estaciones base
 int N;
@@ -13,18 +13,18 @@ int M;
 set of int: k = 1..M;
 
 % Distancia entre la i-ésima estación base y el k-ésimo punto de medición
-array[i, k] of var float: d_ik;
+array[i, k] of float: d_ik;
 
 % Población que demanda servicio en el punto k
-array[k] of var int: pob_k;
+array[k] of int: pob_k;
 
 % Índice de antenas
 set of int: j = 1..3*N;
 % Indica si dos antenas comparten el mismo Bloque de Recursos
-array[i, j] of var int: cocan_ij;
+array[i, j] of int: cocan_ij;
 
 % Cantidad recursos asignados a la radiobase i
-array[i] of var int: channels;
+array[i] of int: channels;
 
 % Número de Sectores disponibles para prestar el servicio
 int maxSol;
@@ -38,12 +38,12 @@ float UmbCob;
 % Umbral que define el mínimo nivel permitido para la relación portadora interferencia (SINR) para cada servicio
 float UmbInterf;
 
-%%%%%%%%%% Variables de Decisión %%%%%%%%%%
-
 % Número de antenas por estación base
 int P;
 % Índice de antenas
 set of int: h = 1..P;
+
+%%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
 
 % Flag que indica si el punto k tiene cobertura de alguna radiobase
 array[k] of var int: C_k;
@@ -60,7 +60,7 @@ array[i, h] of var float Pot_ih;
 % Cantidad de población por Sector
 array[i] of var int Pob_j;
 
-%%%%%%%%%% Estructuras de Datos %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Estructuras de Datos %%%%%%%%%%%%%%%%%%%%
 
 % Indica si la radiobase i cubre el punto k
 array[i, k] of var int lRbs_ik;
@@ -83,7 +83,7 @@ array[i, k] of var float lEl_ik;
 % Índice de la radiobase que brinda el nivel de señal más alto en el punto k
 array[k] of var int indDesSig_k;
 
-%%%%%%%%%% Restricciones %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Restricciones %%%%%%%%%%%%%%%%%%%%
 
 % Radiobase cubre el punto
 constraint forall (ind_i in i, ind_k in k)

@@ -1,3 +1,5 @@
+%%%%%%%%%%%%%%%%%%%% Variables de Entrada %%%%%%%%%%%%%%%%%%%%
+
 % Número de estaciones base; índice i. int
 N = 2;
 
@@ -34,7 +36,9 @@ UmbCob = -70.1;
 UmbInterf = 1;
 
 % Número de antenas por estación base. int
-P = 3; 
+P = 3;
+
+%%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
 
 % Flag que indica si el punto k tiene cobertura de alguna radiobase. bool
 C_k = [1, 0, 0, 1, 0]
