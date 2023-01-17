@@ -3,12 +3,12 @@
 %%%%%%%%%%%%%%%%%%%% Variables de Entrada %%%%%%%%%%%%%%%%%%%%
 
 % Número de estaciones base
-int N;
+int: N;
 % Índice de estaciones base
 set of int: i = 1..N;
 
 % Número de puntos en los que se harán mediciones de señal
-int M;
+int: M;
 % Índice de puntos de medición
 set of int: k = 1..M;
 
@@ -27,21 +27,27 @@ array[i, j] of int: cocan_ij;
 array[i] of int: channels;
 
 % Número de Sectores disponibles para prestar el servicio
-int maxSol;
+int: maxSol;
 
 % Número mínimo de sectores que deberían poder atender el servicio
-int minSol;
+int: minSol;
 
 % Umbral a partir del cual se puede definir si un punto tiene o no cobertura, dado en dBm
-float UmbCob;
+float: UmbCob;
 
 % Umbral que define el mínimo nivel permitido para la relación portadora interferencia (SINR) para cada servicio
-float UmbInterf;
+float: UmbInterf;
 
 % Número de antenas por estación base
-int P;
+int: P;
 % Índice de antenas
 set of int: h = 1..P;
+
+% Peso del objetivo Cantidad de población atendida
+int: W1 = 1
+
+% Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido para el active set
+int: W2 = 1
 
 %%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
 
@@ -49,39 +55,39 @@ set of int: h = 1..P;
 array[k] of var int: C_k;
 
 % Azimuth de la h-ésima antena
-array[i, h] of var float AzAnt_ih;
+array[i, h] of var float: AzAnt_ih;
 
 % Elevación de la h-ésima antena
-array[i, h] of var float ElAnt_ih;
+array[i, h] of var float: ElAnt_ih;
 
 % Potencia de la h-ésima antena
-array[i, h] of var float Pot_ih;
+array[i, h] of var float: Pot_ih;
 
 % Cantidad de población por Sector
-array[i] of var int Pob_j;
+array[i] of var int: Pob_j;
 
 %%%%%%%%%%%%%%%%%%%% Estructuras de Datos %%%%%%%%%%%%%%%%%%%%
 
 % Indica si la radiobase i cubre el punto k
-array[i, k] of var int lRbs_ik;
+array[i, k] of var int: lRbs_ik;
 
 % Si lRbs_ik, indica el índice h de la antena que lo cubre
-array[i, k] of var int lAnt_ik;
+array[i, k] of var int: lAnt_ik;
 
 % Nivel de señal que desde la antena lAnt_ik llega al punto
-array[i, k] of var float lSig_ik;
+array[i, k] of var float: lSig_ik;
 
 % Indica si lSig_ik supera el umbral de cobertura
-array[i, k] of var int lFlgCob_ik;
+array[i, k] of var int: lFlgCob_ik;
 
 % Ángulo de azimut con el que la antena lAnt_ik incide en el punto k
-array[i, k] of var float lAz_ik;
+array[i, k] of var float: lAz_ik;
 
 % Ángulo de elevación con el que la antena lAnt_ik incide en el punto k
-array[i, k] of var float lEl_ik;
+array[i, k] of var float: lEl_ik;
 
 % Índice de la radiobase que brinda el nivel de señal más alto en el punto k
-array[k] of var int indDesSig_k;
+array[k] of var int: indDesSig_k;
 
 %%%%%%%%%%%%%%%%%%%% Restricciones %%%%%%%%%%%%%%%%%%%%
 

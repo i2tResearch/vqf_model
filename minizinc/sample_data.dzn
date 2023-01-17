@@ -38,6 +38,12 @@ UmbInterf = 1;
 % Número de antenas por estación base. int
 P = 3;
 
+% Peso del objetivo Cantidad de población atendida
+W1 = 1
+
+% Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido para el active set
+W2 = 1
+
 %%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
 
 % Flag que indica si el punto k tiene cobertura de alguna radiobase. bool
