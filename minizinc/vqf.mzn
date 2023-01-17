@@ -20,7 +20,7 @@ array[k] of var int: pob_k;
 
 % Índice de antenas
 set of int: j = 1..3*N;
-% Indica si dos antenas comparten el mismo Bloque de Recursos. bool as int
+% Indica si dos antenas comparten el mismo Bloque de Recursos
 array[i, j] of var int: cocan_ij;
 
 % Cantidad recursos asignados a la radiobase i
@@ -45,7 +45,7 @@ int P;
 % Índice de antenas
 set of int: h = 1..P;
 
-% Flag que indica si el punto k tiene cobertura de alguna radiobase. bool as int
+% Flag que indica si el punto k tiene cobertura de alguna radiobase
 array[k] of var int: C_k;
 
 % Azimuth de la h-ésima antena
@@ -62,7 +62,7 @@ array[i] of var int Pob_j;
 
 %%%%%%%%%% Estructuras de Datos %%%%%%%%%%
 
-% Indica si la radiobase i cubre el punto k. bool as int
+% Indica si la radiobase i cubre el punto k
 array[i, k] of var int lRbs_ik;
 
 % Si lRbs_ik, indica el índice h de la antena que lo cubre
@@ -71,7 +71,7 @@ array[i, k] of var int lAnt_ik;
 % Nivel de señal que desde la antena lAnt_ik llega al punto
 array[i, k] of var float lSig_ik;
 
-% Indica si lSig_ik supera el umbral de cobertura. bool as int
+% Indica si lSig_ik supera el umbral de cobertura
 array[i, k] of var int lFlgCob_ik;
 
 % Ángulo de azimut con el que la antena lAnt_ik incide en el punto k
@@ -91,13 +91,14 @@ constraint forall (ind_i in i, ind_k in k)
 
 % Señal deseada en el punto k. El nivel de señal correspondiente al índice de la señal deseada debe ser el mayor de ellos
 constraint forall (ind_k in k) 
-    (indDesSig_k[ind_k] == arg_max(lSig_ik[.., ind_k]));
+    (indDesSig_k[ind_k] = arg_max(lSig_ik[.., ind_k]));
 
 % Sector cubre punto si y solo si el nivel de señal que de él llega al punto supera el umbral
 constraint forall (ind_i in i, ind_k in k)
     (lFlgCob_ik[ind_i, ind_k] = 1 <==> lSig_ik[ind_i, ind_k] > UmbCob);
 
 % Cardinalidad del active set: total de puntos cubiertos
-constraint sum(lFlgCob_ik) <= maxSol;
+constraint sum(ind_i in i, ind_k in k)(lFlgCob_ik[ind_i, ind_k]) <= maxSol;
+
 constraint forall (ind_k in k)
-    (min(lFlgCob_ik[.., ind_k]) = 1 <==> sum(lFlgCob_ik) >= minSol);
+    (min(lFlgCob_ik[.., ind_k]) = 1 <==> sum(ind_i in i)(lFlgCob_ik[ind_i, ind_k]) >= minSol);
