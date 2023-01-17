@@ -75,7 +75,7 @@ array[i, k] of var int: lRbs_ik;
 array[i, k] of var int: lAnt_ik;
 
 % Nivel de señal que desde la antena lAnt_ik llega al punto
-array[i, k] of var float: lSig_ik;
+array[i, k] of float: lSig_ik; % var float is not allowed in the constraint
 
 % Indica si lSig_ik supera el umbral de cobertura
 array[i, k] of var int: lFlgCob_ik;
