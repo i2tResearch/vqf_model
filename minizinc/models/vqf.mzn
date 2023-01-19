@@ -1,4 +1,5 @@
-% MiniZinc model for the VQF project
+% Modelo en MiniZinc para el Proyecto VQF
+% Grupo i2T, Universidad Icesi
 
 %%%%%%%%%%%%%%%%%%%% Variables de Entrada %%%%%%%%%%%%%%%%%%%%
 
@@ -112,8 +113,8 @@ constraint forall(_k in k)
 %%%%%%%%%%%%%%%%%%%% Función objetivo %%%%%%%%%%%%%%%%%%%%
 
 % Total población atendida
-var int: pobl_cob = sum(_k in k)(C_k[_k] * pob_k[_k]);
+var int: total_pob = sum(_k in k)(C_k[_k] * pob_k[_k]);
 % Total puntos con cobertura superior al mínimo definido
-var int: k_cob = sum(_k in k)(min(lFlgCob_ik[.., _k]));
+var int: total_kcob = sum(_k in k)(min(lFlgCob_ik[.., _k]));
 % Objetivo con pesos
-solve maximize W1 * pobl_cob + W2 * k_cob;
+solve maximize W1 * total_pob + W2 * total_kcob;

@@ -1,13 +1,13 @@
-# vqf_model
+# Proyecto VQF
 
-MiniZinc model for the VQF project.
+Modelo en MiniZinc para el proyecto VQF.
 
-## Developer notes
+## Notas del desarrollador
 
-* Some comments and variable names are in spanish because the model was designed that way. Do not change them.
-* We represent booleans as integers 1 (true) and 0 (false).
+* Este repositorio se manejan en español porque así fue diseñado el modelo.
+* Los nombres de las variables están como aparecen en el documento de definición del modelo.
 
-## Docs and resources
+## Documentación y recursos
 
-* Find the model in the file [Formula Orquestadorv2_junio_2022.docx](./docs/Formula%20Orquestadorv2_junio_2022.docx)
-* And read the [MiniZinc Handbook](https://www.minizinc.org/doc-2.6.4/en/index.html)
+* El modelo está en el archivo [Formula Orquestadorv2_junio_2022.docx](./docs/Formula%20Orquestadorv2_junio_2022.docx)
+* [MiniZinc Handbook](https://www.minizinc.org/doc-2.6.4/en/index.html)
