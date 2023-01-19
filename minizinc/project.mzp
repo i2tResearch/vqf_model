@@ -4,12 +4,12 @@
         "models/vqf.mzn",
         "data/sample.dzn"
     ],
-    "projectFiles": [
-        "models/playground.mzn",
-        "models/vqf.mzn",
-        "data/sample.dzn"
-    ],
     "openTab": 0,
+    "projectFiles": [
+        "data/sample.dzn",
+        "models/playground.mzn",
+        "models/vqf.mzn"
+    ],
     "selectedBuiltinConfigId": "org.gecode.gecode",
     "selectedBuiltinConfigVersion": "6.3.0",
     "version": 106
