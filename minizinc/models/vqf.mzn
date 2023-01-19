@@ -46,7 +46,7 @@ set of int: h = 1..P;
 % Peso del objetivo Cantidad de población atendida
 int: W1 = 1;
 
-% Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido para el active set
+% Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido
 int: W2 = 1;
 
 %%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
@@ -111,6 +111,9 @@ constraint forall(_k in k)
 
 %%%%%%%%%%%%%%%%%%%% Función objetivo %%%%%%%%%%%%%%%%%%%%
 
-solve maximize 
-  W1 * sum(_k in k)(C_k[_k] * pob_k[_k]) + 
-  W2 * sum(_k in k)(min(lFlgCob_ik[.., _k]));
+% Total población atendida
+var int: pobl_cob = sum(_k in k)(C_k[_k] * pob_k[_k]);
+% Total puntos con cobertura superior al mínimo definido
+var int: k_cob = sum(_k in k)(min(lFlgCob_ik[.., _k]));
+% Objetivo con pesos
+solve maximize W1 * pobl_cob + W2 * k_cob;

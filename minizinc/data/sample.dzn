@@ -41,7 +41,7 @@ P = 3;
 % Peso del objetivo Cantidad de población atendida
 W1 = 1
 
-% Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido para el active set
+% Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido
 W2 = 1
 
 %%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
