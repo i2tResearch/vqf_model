@@ -16,6 +16,8 @@ var 1.0..10000.0: resp_d;
 var 1..1000: resp_pob;
 var int: resp_sum_a;
 var int: resp_sum_b;
+var int: resp_sum_c;
+var int: resp_sum_d;
 array[i] of var int: max_k_index;
 array[k] of var int: max_i_index;
 array[k] of var 0..1: iif;
@@ -35,5 +37,7 @@ constraint forall(ind_k in k)
   
 constraint resp_sum_a = (sum(ind_k in k)(pob_k[ind_k]) > 500);
 constraint resp_sum_b = ((sum(ind_k in k)(pob_k[ind_k])) > 500);
+constraint resp_sum_c = (sum(ind_k in k)(pob_k[ind_k]) < 500);
+constraint resp_sum_d = ((sum(ind_k in k)(pob_k[ind_k])) < 500);
 
 solve satisfy;
