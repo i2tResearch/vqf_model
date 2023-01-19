@@ -14,9 +14,11 @@ pob_k = [100, 90, 20, 50, 80];
 
 var 1.0..10000.0: resp_d;
 var 1..1000: resp_pob;
+var int: resp_sum_a;
+var int: resp_sum_b;
 array[i] of var int: max_k_index;
 array[k] of var int: max_i_index;
-array[k] of var int: iif;
+array[k] of var 0..1: iif;
 
 constraint resp_d = sum(ind_i in i, ind_k in k)(d_ik[ind_i, ind_k]);
 
@@ -29,6 +31,9 @@ constraint forall(ind_k in k)
   (max_i_index[ind_k] = arg_max(d_ik[.., ind_k]));
   
 constraint forall(ind_k in k)
-  (iif[ind_k] = if ind_k > 2 then 1 else 0 endif);
+  (iif[ind_k] = (ind_k > 2));
+  
+constraint resp_sum_a = (sum(ind_k in k)(pob_k[ind_k]) > 500);
+constraint resp_sum_b = ((sum(ind_k in k)(pob_k[ind_k])) > 500);
 
 solve satisfy;
