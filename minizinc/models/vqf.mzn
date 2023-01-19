@@ -21,7 +21,7 @@ array[k] of int: pob_k;
 % Índice de antenas
 set of int: j = 1..3*N;
 % Indica si dos antenas comparten el mismo Bloque de Recursos
-array[i, j] of int: cocan_ij;
+array[i, j] of 0..1: cocan_ij;
 
 % Cantidad recursos asignados a la radiobase i
 array[i] of int: channels;
@@ -52,7 +52,7 @@ int: W2 = 1;
 %%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
 
 % Flag que indica si el punto k tiene cobertura de alguna radiobase
-array[k] of var int: C_k;
+array[k] of var 0..1: C_k;
 
 % Azimuth de la h-ésima antena
 array[i, h] of var float: AzAnt_ih;
@@ -69,16 +69,16 @@ array[i] of var int: Pob_j;
 %%%%%%%%%%%%%%%%%%%% Estructuras de Datos %%%%%%%%%%%%%%%%%%%%
 
 % Indica si la radiobase i cubre el punto k
-array[i, k] of var int: lRbs_ik;
+array[i, k] of var 0..1: lRbs_ik;
 
 % Si lRbs_ik, indica el índice h de la antena que lo cubre
 array[i, k] of var int: lAnt_ik;
 
 % Nivel de señal que desde la antena lAnt_ik llega al punto
-array[i, k] of float: lSig_ik; % var float is not allowed in the constraint
+array[i, k] of float: lSig_ik; % var float no es permitido en la restricción. REVISAR
 
 % Indica si lSig_ik supera el umbral de cobertura
-array[i, k] of var int: lFlgCob_ik;
+array[i, k] of var 0..1: lFlgCob_ik;
 
 % Ángulo de azimut con el que la antena lAnt_ik incide en el punto k
 array[i, k] of var float: lAz_ik;
@@ -92,25 +92,25 @@ array[k] of var int: indDesSig_k;
 %%%%%%%%%%%%%%%%%%%% Restricciones %%%%%%%%%%%%%%%%%%%%
 
 % Radiobase cubre el punto
-constraint forall (ind_i in i, ind_k in k)
-    (lRbs_ik[ind_i, ind_k] = if lSig_ik[ind_i, ind_k] > UmbCob then 1 else 0 endif);
+constraint forall(ind_i in i, ind_k in k)
+  (lRbs_ik[ind_i, ind_k] = (lSig_ik[ind_i, ind_k] > UmbCob));
 
 % Señal deseada en el punto k. El nivel de señal correspondiente al índice de la señal deseada debe ser el mayor de ellos
-constraint forall (ind_k in k)
-    (indDesSig_k[ind_k] = arg_max(lSig_ik[.., ind_k]));
+constraint forall(ind_k in k)
+  (indDesSig_k[ind_k] = arg_max(lSig_ik[.., ind_k]));
 
 % Sector cubre punto si y solo si el nivel de señal que de él llega al punto supera el umbral
-constraint forall (ind_i in i, ind_k in k)
-    (lFlgCob_ik[ind_i, ind_k] = if lSig_ik[ind_i, ind_k] > UmbCob then 1 else 0 endif);
+constraint forall(ind_i in i, ind_k in k)
+  (lFlgCob_ik[ind_i, ind_k] = (lSig_ik[ind_i, ind_k] > UmbCob));
 
 % Cardinalidad del active set: total de puntos cubiertos
 constraint sum(ind_i in i, ind_k in k)(lFlgCob_ik[ind_i, ind_k]) <= maxSol;
 
-constraint forall (ind_k in k)
-    (min(lFlgCob_ik[.., ind_k]) = if sum(ind_i in i)(lFlgCob_ik[ind_i, ind_k]) >= minSol then 1 else 0 endif);
+constraint forall(ind_k in k)
+  (min(lFlgCob_ik[.., ind_k]) = (sum(ind_i in i)(lFlgCob_ik[ind_i, ind_k]) >= minSol));
 
 %%%%%%%%%%%%%%%%%%%% Función objetivo %%%%%%%%%%%%%%%%%%%%
 
 solve maximize 
-    W1 * sum(ind_k in k)(C_k[ind_k] * pob_k[ind_k]) + 
-    W2 * sum(ind_k in k)(min(lFlgCob_ik[.., ind_k]));
+  W1 * sum(ind_k in k)(C_k[ind_k] * pob_k[ind_k]) + 
+  W2 * sum(ind_k in k)(min(lFlgCob_ik[.., ind_k]));
