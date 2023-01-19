@@ -92,25 +92,25 @@ array[k] of var int: indDesSig_k;
 %%%%%%%%%%%%%%%%%%%% Restricciones %%%%%%%%%%%%%%%%%%%%
 
 % Radiobase cubre el punto
-constraint forall(ind_i in i, ind_k in k)
-  (lRbs_ik[ind_i, ind_k] = (lSig_ik[ind_i, ind_k] > UmbCob));
+constraint forall(_i in i, _k in k)
+  (lRbs_ik[_i, _k] = (lSig_ik[_i, _k] > UmbCob));
 
 % Señal deseada en el punto k. El nivel de señal correspondiente al índice de la señal deseada debe ser el mayor de ellos
-constraint forall(ind_k in k)
-  (indDesSig_k[ind_k] = arg_max(lSig_ik[.., ind_k]));
+constraint forall(_k in k)
+  (indDesSig_k[_k] = arg_max(lSig_ik[.., _k]));
 
 % Sector cubre punto si y solo si el nivel de señal que de él llega al punto supera el umbral
-constraint forall(ind_i in i, ind_k in k)
-  (lFlgCob_ik[ind_i, ind_k] = (lSig_ik[ind_i, ind_k] > UmbCob));
+constraint forall(_i in i, _k in k)
+  (lFlgCob_ik[_i, _k] = (lSig_ik[_i, _k] > UmbCob));
 
 % Cardinalidad del active set: total de puntos cubiertos
-constraint sum(ind_i in i, ind_k in k)(lFlgCob_ik[ind_i, ind_k]) <= maxSol;
+constraint sum(_i in i, _k in k)(lFlgCob_ik[_i, _k]) <= maxSol;
 
-constraint forall(ind_k in k)
-  (min(lFlgCob_ik[.., ind_k]) = (sum(ind_i in i)(lFlgCob_ik[ind_i, ind_k]) >= minSol));
+constraint forall(_k in k)
+  (min(lFlgCob_ik[.., _k]) = (sum(_i in i)(lFlgCob_ik[_i, _k]) >= minSol));
 
 %%%%%%%%%%%%%%%%%%%% Función objetivo %%%%%%%%%%%%%%%%%%%%
 
 solve maximize 
-  W1 * sum(ind_k in k)(C_k[ind_k] * pob_k[ind_k]) + 
-  W2 * sum(ind_k in k)(min(lFlgCob_ik[.., ind_k]));
+  W1 * sum(_k in k)(C_k[_k] * pob_k[_k]) + 
+  W2 * sum(_k in k)(min(lFlgCob_ik[.., _k]));
