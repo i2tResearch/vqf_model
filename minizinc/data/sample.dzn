@@ -44,24 +44,35 @@ W1 = 1
 % Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido
 W2 = 1
 
-%%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Estructuras de Datos %%%%%%%%%%%%%%%%%%%%
 
 % Flag que indica si el punto k tiene cobertura de alguna radiobase. bool
 C_k = [1, 0, 0, 1, 0]
 
-% Azimuth de la h-ésima antena. float
-AzAnt_ih = [| 0.0, 120.0, 240.0
-            | 0.0, 120.0, 240.0 |]
+% Indica si la radiobase i cubre el punto k
+lRbs_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1
+           | 5.4, 4.0, 3.1, 2.9, 1.8 |]
 
-% Elevación de la h-ésima antena. float
-ElAnt_ih = [| -3.0, -3.0, -3.0
-              | -3.0, -3.0, -3.0 |]
+% Si lRbs_ik, indica el índice h de la antena que lo cubre
+lAnt_ik = [| 1, 1, 2, 3, 2
+           | 3, 1, 2, 3, 1 |]
+           
+% Nivel de señal que desde la antena lAnt_ik llega al punto
+lSig_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1
+           | 5.4, 4.0, 3.1, 2.9, 1.8 |]
 
-% Potencia de la h-ésima antena. float
-Pot_ih = [| -40.0, -40.0, -40.0
-          | -40.0, -40.0, -40.0 |]
+% Indica si lSig_ik supera el umbral de cobertura
+lFlgCob_ik = [| 0, 1, 1, 0, 1
+              | 1, 0, 0, 1, 0 |]
 
-% Cantidad de población por Sector i. Suma de la población
-% en los puntos a los que le brinda cobertura el sector i, usada 
-% para el cálculo del tráfico por sector. int
-Pob_j = [200, 500]
+% Ángulo de azimut con el que la antena lAnt_ik incide en el punto k
+lAz_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1
+          | 5.4, 4.0, 3.1, 2.9, 1.8 |]
+           
+% Ángulo de elevación con el que la antena lAnt_ik incide en el punto k
+lEl_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1
+           | 5.4, 4.0, 3.1, 2.9, 1.8 |]
+           
+% Índice de la radiobase que brinda el nivel de señal más alto en el punto k
+indDesSig_k = [| 1, 2, 1, 2, 1
+               | 1, 1, 1, 1, 2 |]
