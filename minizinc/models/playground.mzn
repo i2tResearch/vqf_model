@@ -2,7 +2,7 @@
 
 int: N = 2;
 set of int: i = 1..N;
-int:M = 5;
+int: M = 5;
 set of int: k = 1..M;
 
 array[i, k] of float: d_ik;
