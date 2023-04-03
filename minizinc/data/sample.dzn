@@ -8,17 +8,17 @@ M = 5;
 
 % Distancia entre la i-ésima estación base y el k-ésimo punto de medición. float
 d_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1
-        | 5.4, 4.0, 3.1, 2.9, 1.8 |]
+        | 5.4, 4.0, 3.1, 2.9, 1.8 |];
 
 % Población que demanda servicio en el punto k. int
-pob_k = [100, 90, 20, 50, 80]
+pob_k = [100, 90, 20, 50, 80];
 
 % Indica si dos antenas comparten el mismo Bloque de Recursos. j {1..3N}. bool
 cocan_ij = [| 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-            | 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 |]
+            | 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 |];
 
 % Cantidad recursos asignados a la radiobase i. int
-channels = [20, 20]
+channels = [20, 20];
 
 % Número de Sectores disponibles para prestar el servicio. int
 maxSol = 8;
@@ -39,40 +39,40 @@ UmbInterf = 1;
 P = 3;
 
 % Peso del objetivo Cantidad de población atendida
-W1 = 1
+W1 = 1;
 
 % Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido
-W2 = 1
+W2 = 1;
 
 %%%%%%%%%%%%%%%%%%%% Estructuras de Datos %%%%%%%%%%%%%%%%%%%%
 
 % Flag que indica si el punto k tiene cobertura de alguna radiobase. bool
-C_k = [1, 0, 0, 1, 0]
+C_k = [1, 0, 0, 1, 0];
 
 % Indica si la radiobase i cubre el punto k
 lRbs_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1
-           | 5.4, 4.0, 3.1, 2.9, 1.8 |]
+           | 5.4, 4.0, 3.1, 2.9, 1.8 |];
 
 % Si lRbs_ik, indica el índice h de la antena que lo cubre
 lAnt_ik = [| 1, 1, 2, 3, 2
-           | 3, 1, 2, 3, 1 |]
+           | 3, 1, 2, 3, 1 |];
            
 % Nivel de señal que desde la antena lAnt_ik llega al punto
 lSig_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1
-           | 5.4, 4.0, 3.1, 2.9, 1.8 |]
+           | 5.4, 4.0, 3.1, 2.9, 1.8 |];
 
 % Indica si lSig_ik supera el umbral de cobertura
 lFlgCob_ik = [| 0, 1, 1, 0, 1
-              | 1, 0, 0, 1, 0 |]
+              | 1, 0, 0, 1, 0 |];
 
 % Ángulo de azimut con el que la antena lAnt_ik incide en el punto k
 lAz_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1
-          | 5.4, 4.0, 3.1, 2.9, 1.8 |]
+          | 5.4, 4.0, 3.1, 2.9, 1.8 |];
            
 % Ángulo de elevación con el que la antena lAnt_ik incide en el punto k
 lEl_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1
-           | 5.4, 4.0, 3.1, 2.9, 1.8 |]
+           | 5.4, 4.0, 3.1, 2.9, 1.8 |];
            
 % Índice de la radiobase que brinda el nivel de señal más alto en el punto k
 indDesSig_k = [| 1, 2, 1, 2, 1
-               | 1, 1, 1, 1, 2 |]
+               | 1, 1, 1, 1, 2 |];
