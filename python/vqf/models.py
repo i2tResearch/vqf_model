@@ -18,5 +18,11 @@ class Site:
 
 class Project:
 
-    def __init__(self, sites: list[Site]):
+    def __init__(self, id: int, name: str, avg_receiver_height: float, propagation_model: str, threshold: float, service: str, sites: list[Site]):
+        self.id: int = id
+        self.name: str = name
+        self.avg_receiver_height = avg_receiver_height
+        self.propagation_model: str = propagation_model
+        self.threshold: float = threshold
+        self.service: str = service
         self.sites: list[Site] = sites
