@@ -39,3 +39,5 @@ instance["P"] = 3
 instance["W1"] = 1
 # Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido
 instance["W2"] = 1
+
+result = instance.solve()
