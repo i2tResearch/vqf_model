@@ -66,37 +66,37 @@ array[i, h] of var float: Pot_ih;
 %%%%%%%%%%%%%%%%%%%% Restricciones %%%%%%%%%%%%%%%%%%%%
 
 % Radiobase cubre el punto
-constraint forall(_i in i, _k in k)
-  (lRbs_ik[_i, _k] = 1 <-> lSig_ik[_i, _k] > UmbCob);
+constraint forall(I in i, K in k)
+  (lRbs_ik[I, K] = 1 <-> lSig_ik[I, K] > UmbCob);
 
 % Señal deseada en el punto k. 
 % El nivel de señal correspondiente al índice de la señal deseada debe ser el mayor de ellos
-constraint forall(_k in k)
-  (indDesSig_k[_k] = arg_max(lSig_ik[.., _k]));
+constraint forall(K in k)
+  (indDesSig_k[K] = arg_max(lSig_ik[.., K]));
 
 % Sector cubre punto si y solo si el nivel de señal que de él llega al punto supera el umbral
-constraint forall(_i in i, _k in k)
-  (lFlgCob_ik[_i, _k] = 1 <-> lSig_ik[_i, _k] > UmbCob);
+constraint forall(I in i, K in k)
+  (lFlgCob_ik[I, K] = 1 <-> lSig_ik[I, K] > UmbCob);
 
 % Cardinalidad del active set: total de puntos cubiertos
-constraint sum(_i in i, _k in k)(lFlgCob_ik[_i, _k]) <= maxSol;
+constraint sum(I in i, K in k)(lFlgCob_ik[I, K]) <= maxSol;
 
-constraint forall(_k in k)
-  (min(lFlgCob_ik[.., _k]) = 1 <-> (sum(_i in i)(lFlgCob_ik[_i, _k]) >= minSol));
+constraint forall(K in k)
+  (min(lFlgCob_ik[.., K]) = 1 <-> (sum(I in i)(lFlgCob_ik[I, K]) >= minSol));
 
 % Restricción de azimut por sector de antena
-constraint forall(_i in i)
-  (AzAnt_ih[_i, 1] >= 0 /\ AzAnt_ih[_i, 1] <= 119);
-constraint forall(_i in i)
-  (AzAnt_ih[_i, 2] >= 120 /\ AzAnt_ih[_i, 2] <= 239);
-constraint forall(_i in i)
-  (AzAnt_ih[_i, 3] >= 240 /\ AzAnt_ih[_i, 3] <= 359);
+constraint forall(I in i)
+  (AzAnt_ih[I, 1] >= 0 /\ AzAnt_ih[I, 1] <= 119);
+constraint forall(I in i)
+  (AzAnt_ih[I, 2] >= 120 /\ AzAnt_ih[I, 2] <= 239);
+constraint forall(I in i)
+  (AzAnt_ih[I, 3] >= 240 /\ AzAnt_ih[I, 3] <= 359);
 
 %%%%%%%%%%%%%%%%%%%% Función objetivo %%%%%%%%%%%%%%%%%%%%
 
 % Total población atendida
-var int: total_pob = sum(_k in k)(C_k[_k] * pob_k[_k]);
+var int: total_pob = sum(K in k)(C_k[K] * pob_k[K]);
 % Total puntos con cobertura superior al mínimo definido
-var int: total_kcob = sum(_k in k)(min(lFlgCob_ik[.., _k]));
+var int: total_kcob = sum(K in k)(min(lFlgCob_ik[.., K]));
 % Objetivo con pesos
 solve maximize W1 * total_pob + W2 * total_kcob;
