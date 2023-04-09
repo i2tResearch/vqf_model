@@ -19,7 +19,7 @@ instance["d_ik"] = [[1.5, 2.0, 3.0, 4.3, 5.1], [5.4, 4.0, 3.1, 2.9, 1.8]]
 # Población que demanda servicio en el punto k. int
 instance["pob_k"] = [100, 90, 20, 50, 80]
 # Indica si dos antenas comparten el mismo Bloque de Recursos. j {1..3N}. bool
-instance["cocan_ij"] = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+instance["cocan_ij"] = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
 # Cantidad recursos asignados a la radiobase i. int
 instance["channels"] = [20, 20]
 # Número de Sectores disponibles para prestar el servicio. int
@@ -39,5 +39,25 @@ instance["P"] = 3
 instance["W1"] = 1
 # Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido
 instance["W2"] = 1
+
+#################### Estructuras de datos ####################
+
+# Flag que indica si el punto k tiene cobertura de alguna radiobase. bool
+instance["C_k"] = [1, 0, 0, 1, 0]
+# Indica si la radiobase i cubre el punto k
+instance["lRbs_ik"] = [[1, 1, 1, 1, 1], [1, 0, 0, 1, 0]]
+# Si lRbs_ik, indica el índice h de la antena que lo cubre
+instance["lAnt_ik"] = [[1, 1, 2, 3, 2], [3, 1, 2, 3, 1]]
+# Nivel de señal que desde la antena lAnt_ik llega al punto
+instance["lSig_ik"] = [[1.5, 2.0, 3.0, 4.3, 5.1], [5.4, 4.0, 3.1, 2.9, 1.8]]
+# Indica si lSig_ik supera el umbral de cobertura
+instance["lFlgCob_ik"] = [[0, 1, 1, 0, 1], [1, 0, 0, 1, 0]]
+# Ángulo de azimut con el que la antena lAnt_ik incide en el punto k
+instance["lAz_ik"] = [[1.5, 2.0, 3.0, 4.3, 5.1], [5.4, 4.0, 3.1, 2.9, 1.8]]
+# Ángulo de elevación con el que la antena lAnt_ik incide en el punto k
+instance["lEl_ik"] = [[1.5, 2.0, 3.0, 4.3, 5.1], [5.4, 4.0, 3.1, 2.9, 1.8]]
+# Índice de la radiobase que brinda el nivel de señal más alto en el punto k
+instance["indDesSig_k"] = [1, 2, 1, 2, 1]
+
 
 result = instance.solve()

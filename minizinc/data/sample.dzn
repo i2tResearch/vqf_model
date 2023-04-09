@@ -14,8 +14,8 @@ d_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1
 pob_k = [100, 90, 20, 50, 80];
 
 % Indica si dos antenas comparten el mismo Bloque de Recursos. j {1..3N}. bool
-cocan_ij = [| 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-            | 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 |];
+cocan_ij = [| 0, 0, 0, 0, 0, 0
+            | 0, 0, 0, 0, 0, 0 |];
 
 % Cantidad recursos asignados a la radiobase i. int
 channels = [20, 20];
@@ -50,8 +50,8 @@ W2 = 1;
 C_k = [1, 0, 0, 1, 0];
 
 % Indica si la radiobase i cubre el punto k
-lRbs_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1
-           | 5.4, 4.0, 3.1, 2.9, 1.8 |];
+lRbs_ik = [| 1, 1, 1, 1, 1 
+           | 1, 0, 0, 1, 0 |];
 
 % Si lRbs_ik, indica el índice h de la antena que lo cubre
 lAnt_ik = [| 1, 1, 2, 3, 2
@@ -74,5 +74,4 @@ lEl_ik = [| 1.5, 2.0, 3.0, 4.3, 5.1
            | 5.4, 4.0, 3.1, 2.9, 1.8 |];
            
 % Índice de la radiobase que brinda el nivel de señal más alto en el punto k
-indDesSig_k = [| 1, 2, 1, 2, 1
-               | 1, 1, 1, 1, 2 |];
+indDesSig_k = [1, 2, 1, 2, 1];
