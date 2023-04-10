@@ -23,3 +23,5 @@ Modelo en MiniZinc para el proyecto VQF.
 ## Python modules
 * requests: HTTP client
 * click: CLI properties manager
+* tifffile: TIFF manager
+* imagecodecs: Required to load TIFF file
