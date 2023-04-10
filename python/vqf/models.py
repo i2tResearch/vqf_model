@@ -70,3 +70,17 @@ class Project:
         transmitters = j["transmitterList"]
         project.sites = Site.from_api_dict(transmitters)
         return project
+
+
+class OptimizationProperties:
+
+    def __init__(self, signal_levels: list[list[float]]):
+        self.signal_levels: list[list[float]] = signal_levels
+
+    def count_points_without_coverage(self, threshold: float) -> int:
+        count = 0
+        for i in self.signal_levels:
+            for j in i:
+                if j <= threshold:
+                    count += 1
+        return count
