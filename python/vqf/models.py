@@ -77,10 +77,13 @@ class OptimizationProperties:
     def __init__(self, signal_levels: list[list[float]]):
         self.signal_levels: list[list[float]] = signal_levels
 
-    def count_points_without_coverage(self, threshold: float) -> int:
+    def count_points_over_threshold(self, threshold: float) -> int:
         count = 0
         for i in self.signal_levels:
             for j in i:
-                if j <= threshold:
+                if j >= threshold:
                     count += 1
         return count
+
+    def count_points(self) -> int:
+        return len(self.signal_levels) * len(self.signal_levels[0])

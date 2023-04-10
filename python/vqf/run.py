@@ -57,7 +57,14 @@ def run_vqf(api_url, username, password):
     open("tmp.tiff", "wb").write(tiff_bin)
     signal_levels_matrix = tifffile.imread("tmp.tiff")
     optimization_properties = OptimizationProperties(signal_levels_matrix)
-    print(optimization_properties.count_points_without_coverage(-8))
+
+    print("=================================================")
+    print("Sample tasks over data")
+    threshold = -8
+    print(
+        f"Points with coverage, THR {threshold}:",
+        optimization_properties.count_points_over_threshold(threshold=-8))
+    print("Total points:", optimization_properties.count_points())
 
 
 if __name__ == '__main__':
