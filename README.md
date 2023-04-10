@@ -19,3 +19,7 @@ Modelo en MiniZinc para el proyecto VQF.
 * Cree un entorno virtual de python `python3 -m venv env`.
 * Active el entorno `source env/bin/activate`.
 * Instale el paquete de python `pip install minizinc`.
+
+## Python modules
+* requests: HTTP client
+* click: CLI properties manager
