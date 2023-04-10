@@ -1,7 +1,7 @@
 import click
 import tifffile
 from celgis import Celgis
-from models import Project
+from models import Project, OptimizationProperties
 
 
 @click.command()
@@ -55,8 +55,9 @@ def run_vqf(api_url, username, password):
     print("Retrieving the TIFF that contains the signal levels")
     tiff_bin = celgis.get_project_tiff(project_id)
     open("tmp.tiff", "wb").write(tiff_bin)
-    tiff_array = tifffile.imread("tmp.tiff")
-    print(tiff_array)
+    signal_levels_matrix = tifffile.imread("tmp.tiff")
+    optimization_properties = OptimizationProperties(signal_levels_matrix)
+    print(optimization_properties.count_points_without_coverage(-8))
 
 
 if __name__ == '__main__':
