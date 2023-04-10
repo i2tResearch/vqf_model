@@ -22,3 +22,8 @@ class Celgis:
         url = f"{self.api_url}/projects"
         response = requests.get(url, headers=self.headers)
         return response.json()
+
+    def get_project(self, id):
+        url = f"{self.api_url}/projects/{id}"
+        response = requests.get(url, headers=self.headers)
+        return response.json()
