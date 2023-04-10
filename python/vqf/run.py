@@ -1,4 +1,5 @@
 import click
+import tifffile
 from celgis import Celgis
 from models import Project
 
@@ -8,6 +9,10 @@ from models import Project
 @click.option("--username", help="Celgis username")
 @click.option("--password", help="Celgis password")
 def run_vqf(api_url, username, password):
+    if username is None or password is None:
+        username = click.prompt("Enter the username", type=str)
+        password = click.prompt("Enter the password", type=str)
+
     print("=================== ODISEO/VQ ===================")
     print("Using API endpoint", api_url)
 
@@ -15,7 +20,7 @@ def run_vqf(api_url, username, password):
     if (not celgis.is_active()):
         print("Could not activate celgis connector. Check api_url and credentials")
         return
-    
+
     print("Celgis connector is active")
     print("=================================================")
     print("Available projects:")
@@ -27,18 +32,31 @@ def run_vqf(api_url, username, password):
 
     print("=================================================")
     index = click.prompt("Enter the project index", type=int, default=0)
-    selected = projects[index]
+    project_id = projects[index].id
     print("Selected project:", projects[index].id)
 
-    json_project = celgis.get_project(selected.id)
+    json_project = celgis.get_project(project_id)
     project = Project.from_api_dict_detailed(json_project)
-    
+
     print("=================================================")
     print("Project", project)
     for s in project.sites:
         print("\t", "Site", s)
         for a in s.antennas:
             print("\t", "\t", "Antenna", a)
+
+    print("=================================================")
+    lat = 3.4228480292106775
+    lon = -76.52822476196289
+    json_signal_level = celgis.get_project_signal_level(project_id, lat, lon)
+    print(f"Signal level at LAT {lat} and LON {lon}:", json_signal_level)
+
+    print("=================================================")
+    print("Retrieving the TIFF that contains the signal levels")
+    tiff_bin = celgis.get_project_tiff(project_id)
+    open("tmp.tiff", "wb").write(tiff_bin)
+    tiff_array = tifffile.imread("tmp.tiff")
+    print(tiff_array)
 
 
 if __name__ == '__main__':
