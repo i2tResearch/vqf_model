@@ -1,18 +1,28 @@
-class Antenna:
+class Transmitter:
 
-    def __init__(self, id: str, name: str, azimuth: float, tilt: float, power: float):
+    def __init__(
+            self, id: str, name: str, height: float, power: float,
+            frequency: float, tilt: float, azimuth: float,
+            gain: float, reference: str):
         self.id: str = id
         self.name: str = name
-        self.azimuth: float = azimuth
-        self.tilt: float = tilt
+        self.height: float = height
         self.power: float = power
+        self.frequency: float = frequency
+        self.tilt: float = tilt
+        self.azimuth: float = azimuth
+        self.gain: float = gain
+        self.reference: str = reference
 
     def __str__(self):
-        return f"{self.name} (AZ {self.azimuth}, TL {self.tilt}, PW: {self.power})"
+        return f"{self.name}, {self.frequency} (AZ {self.azimuth}, TL {self.tilt}, H: {self.height}, PW: {self.power}, G: {self.gain}, {self.reference})"
 
     @classmethod
-    def from_api_dict(cls, j) -> "Antenna":
-        return Antenna(j["id"], j["name"], j["azimuth"], j["tilt"], j["power"])
+    def from_api_dict(cls, j) -> "Transmitter":
+        return Transmitter(
+            j["id"], j["name"], j["height"], j["power"],
+            j["frequency"], j["tilt"], j["azimuth"],
+            j["gain"], j["reference"])
 
 
 class Site:
@@ -20,7 +30,7 @@ class Site:
     def __init__(self, latitude: float, longitude: float):
         self.latitude: float = latitude
         self.longitude: float = longitude
-        self.antennas: list[Antenna] = []
+        self.transmitters: list[Transmitter] = []
 
     def __str__(self):
         return f"Lat: {self.latitude}, Lon: {self.longitude}"
@@ -32,11 +42,12 @@ class Site:
         sites = []
         for l in unique_locations:
             site = Site(l[0], l[1])
-            antennas = filter(
+            transmitters = filter(
                 lambda s: s["location"]["latitude"] == site.latitude and
                 s["location"]["longitude"] == site.longitude,
                 j)
-            site.antennas = [Antenna.from_api_dict(a) for a in antennas]
+            site.transmitters = [
+                Transmitter.from_api_dict(t) for t in transmitters]
             sites.append(site)
         return sites
 

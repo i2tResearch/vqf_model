@@ -43,8 +43,8 @@ def run_vqf(api_url, username, password):
     print("Project", project)
     for s in project.sites:
         print("\t", "Site", s)
-        for a in s.antennas:
-            print("\t", "\t", "Antenna", a)
+        for t in s.transmitters:
+            print("\t", "\t", "Transmitter", t)
 
     print("=================================================")
     lat = 3.4228480292106775
