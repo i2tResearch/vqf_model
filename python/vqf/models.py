@@ -44,12 +44,12 @@ class Site:
 class Project:
 
     def __init__(
-            self, id: int, name: str, avg_receiver_height: float,
-            propagation_model: str, threshold: float, simulated: bool):
-        self.id: int = id
+            self, id: str, name: str, propagation_model: str,
+            avg_receiver_height: float, threshold: float, simulated: bool):
+        self.id: str = id
         self.name: str = name
-        self.avg_receiver_height = avg_receiver_height
         self.propagation_model: str = propagation_model
+        self.avg_receiver_height = avg_receiver_height
         self.threshold: float = threshold
         self.simulated: bool = simulated
         self.sites: list["Site"] = []
@@ -60,8 +60,8 @@ class Project:
     @classmethod
     def from_api_dict(cls, j) -> "Project":
         return Project(
-            j["id"], j["name"], j["averageReceiverHeight"],
-            j["propagationModel"], j["threshold"], j["existsSimulation"]
+            j["id"], j["name"], j["propagationModel"],
+            j["averageReceiverHeight"], j["threshold"], j["existsSimulation"]
         )
 
     @classmethod

@@ -22,6 +22,7 @@ def run_vqf(api_url, username, password):
         return
 
     print("Celgis connector is active")
+
     print("=================================================")
     print("Available projects:")
 
@@ -58,13 +59,10 @@ def run_vqf(api_url, username, password):
     signal_levels_matrix = tifffile.imread("tmp.tiff")
     optimization_properties = OptimizationProperties(signal_levels_matrix)
 
-    print("=================================================")
-    print("Sample tasks over data")
-    threshold = -8
     print(
-        f"Points with coverage, THR {threshold}:",
-        optimization_properties.count_points_over_threshold(threshold=-8))
-    print("Total points:", optimization_properties.count_points())
+        f"Points with coverage (THR {project.threshold}):",
+        optimization_properties.count_points_over_threshold(project.threshold),
+        "of", optimization_properties.count_points())
 
 
 if __name__ == '__main__':
