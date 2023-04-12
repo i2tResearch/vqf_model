@@ -19,9 +19,10 @@ Modelo en MiniZinc para el proyecto VQF.
 * Cree un entorno virtual de python `python3 -m venv env`.
 * Active el entorno `source env/bin/activate`.
 * Instale el paquete de python `pip install minizinc`.
+* Cree la carpeta `python/vqf/test`.
 
 ## Python modules
-* requests: HTTP client
-* click: CLI properties manager
-* tifffile: TIFF manager
-* imagecodecs: Required to load TIFF file
+* requests: Cliente HTTP
+* click: Manejo de propiedades de la CLI
+* tifffile: Acceso a archivos TIFF
+* imagecodecs: Requerimiento de tifffile
