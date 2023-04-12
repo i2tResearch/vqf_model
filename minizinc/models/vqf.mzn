@@ -6,6 +6,8 @@
 % Número de estaciones base e índice
 int: N;
 set of int: i = 1..N;
+% Número de antenas por estación base. Índice. Valor fijo en 3
+set of int: h = 1..3;
 % Número de puntos en los que se harán mediciones de señal e índice
 int: M;
 set of int: k = 1..M;
