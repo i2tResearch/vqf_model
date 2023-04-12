@@ -55,8 +55,8 @@ def run_vqf(api_url, username, password):
     print("=================================================")
     print("Retrieving the TIFF that contains the signal levels")
     tiff_bin = celgis.get_project_tiff(project_id)
-    open("tmp.tiff", "wb").write(tiff_bin)
-    signal_levels_matrix = tifffile.imread("tmp.tiff")
+    open("./tmp/tmp.tiff", "wb").write(tiff_bin)
+    signal_levels_matrix = tifffile.imread("./tmp/tmp.tiff")
     optimization_properties = OptimizationProperties(signal_levels_matrix)
 
     print(

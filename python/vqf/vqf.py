@@ -7,13 +7,13 @@
 #################### Configurar logs ####################
 
 import logging
-logging.basicConfig(filename="vqf_logs.log", level=logging.DEBUG)
+logging.basicConfig(filename="./tmp/vqf_logs.log", level=logging.DEBUG)
 
 #################### Conexión del modelo ####################
 
 from minizinc import Instance, Model, Solver
 
-model = Model("../../minizinc/models/vqf_simplified.mzn")
+model = Model("../../minizinc/models/vqf_simplified_hata.mzn")
 gecode = Solver.lookup("gecode")
 instance = Instance(gecode, model)
 
