@@ -32,7 +32,10 @@ class Celgis:
         url = f"{self.api_url}/projects/{id}/signal-level"
         payload = dict(latitude=latitude, longitude=longitude)
         response = requests.get(url, json=payload, headers=self.headers)
-        return response.json()
+        try:
+            return response.json()
+        except:
+            return None
 
     def get_project_tiff(self, id):
         url = f"{self.api_url}/projects/{id}/tiff"
