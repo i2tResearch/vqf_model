@@ -84,3 +84,9 @@ class Project:
         transmitters = j["transmitterList"]
         project.sites = Site.from_api_dict(transmitters)
         return project
+
+    def number_of_points(self):
+        if (len(self.coverage_matrix) > 0):
+            return len(self.coverage_matrix) * len(self.coverage_matrix[0])
+        else:
+            return 0
