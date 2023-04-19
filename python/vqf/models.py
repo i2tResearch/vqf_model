@@ -13,6 +13,7 @@ class Transmitter:
         self.azimuth: float = azimuth
         self.gain: float = gain
         self.reference: str = reference
+        self.coverage_matrix: list[list[float]] = []
 
     def __str__(self):
         return f"{self.name}, {self.frequency} (AZ {self.azimuth}, TL {self.tilt}, H: {self.height}, PW: {self.power}, G: {self.gain}, {self.reference})"
@@ -64,6 +65,7 @@ class Project:
         self.threshold: float = threshold
         self.simulated: bool = simulated
         self.sites: list["Site"] = []
+        self.coverage_matrix: list[list[float]] = []
 
     def __str__(self):
         return f"{self.id} {self.name} ({self.propagation_model}, THR {self.threshold}, ARH {self.avg_receiver_height})"
@@ -81,20 +83,3 @@ class Project:
         transmitters = j["transmitterList"]
         project.sites = Site.from_api_dict(transmitters)
         return project
-
-
-class OptimizationProperties:
-
-    def __init__(self, signal_levels: list[list[float]]):
-        self.signal_levels: list[list[float]] = signal_levels
-
-    def count_points_over_threshold(self, threshold: float) -> int:
-        count = 0
-        for i in self.signal_levels:
-            for j in i:
-                if j >= threshold:
-                    count += 1
-        return count
-
-    def count_points(self) -> int:
-        return len(self.signal_levels) * len(self.signal_levels[0])

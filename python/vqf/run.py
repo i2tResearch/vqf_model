@@ -1,7 +1,7 @@
 import click
 import tifffile
 from celgis import Celgis
-from models import Project, OptimizationProperties
+from models import Project
 
 
 @click.command()
@@ -53,16 +53,21 @@ def run_vqf(api_url, username, password):
     print(f"Signal level at LAT {lat} and LON {lon}:", json_signal_level)
 
     print("=================================================")
-    print("Retrieving the TIFF that contains the signal levels")
+    print("Retrieving the TIFF that contains project coverage matrix")
     tiff_bin = celgis.get_project_tiff(project_id)
-    open("./tmp/tmp.tiff", "wb").write(tiff_bin)
-    signal_levels_matrix = tifffile.imread("./tmp/tmp.tiff")
-    optimization_properties = OptimizationProperties(signal_levels_matrix)
+    tiff_path = "./tmp/project.tiff"
+    open(tiff_path, "wb").write(tiff_bin)
+    project.coverage_matrix = tifffile.imread(tiff_path)
 
-    print(
-        f"Points with coverage (THR {project.threshold}):",
-        optimization_properties.count_points_over_threshold(project.threshold),
-        "of", optimization_properties.count_points())
+    print("Retrieving the TIFFs for reach transmitter")
+    for s in project.sites:
+        for t in s.transmitters:
+            t_tiff_bin = celgis.get_transmitter_tiff(t.id)
+            t_tiff_path = f"./tmp/transmitter_{t.id}.tiff"
+            open(t_tiff_path, "wb").write(t_tiff_bin)
+            t.coverage_matrix = tifffile.imread(t_tiff_path)
+
+    print("End")
 
 
 if __name__ == '__main__':

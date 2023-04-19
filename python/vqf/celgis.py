@@ -41,3 +41,8 @@ class Celgis:
         url = f"{self.api_url}/projects/{id}/tiff"
         response = requests.get(url, headers=self.headers)
         return response.content
+
+    def get_transmitter_tiff(self, id):
+        url = f"{self.api_url}/transmitters/{id}/tiff"
+        response = requests.get(url, headers=self.headers)
+        return response.content
