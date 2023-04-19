@@ -19,7 +19,7 @@ def run_vqf(api_url, username, password):
         print("Could not activate celgis client. Check api_url and credentials")
         return
     celgis = Celgis(celgis_client)
-    
+
     print("Celgis client is active")
 
     print("=================================================")
@@ -38,14 +38,20 @@ def run_vqf(api_url, username, password):
 
     print("=================================================")
     print("Project", project)
-    [print(pc) for pc in project.coverage_matrix]
+    print_matrix(project.coverage_matrix)
     for s in project.sites:
         print("Site", s)
         for t in s.transmitters:
             print("Transmitter", t)
-            [print(tc) for tc in t.coverage_matrix]
+            print_matrix(t.coverage_matrix)
 
     print("End")
+
+
+def print_matrix(matrix):
+    for r in matrix:
+        rf = [str(i) if i != -9999.0 else "_" for i in r]
+        print(rf)
 
 
 if __name__ == '__main__':
