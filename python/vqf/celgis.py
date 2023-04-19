@@ -27,7 +27,6 @@ class Celgis:
         for s in project.sites:
             for t in s.transmitters:
                 t_tiff_bin = self.client.get_transmitter_tiff(id, t.id)
-                print(t_tiff_bin)
                 t_tiff_path = f"./tmp/transmitter_{t.id}.tiff"
                 open(t_tiff_path, "wb").write(t_tiff_bin)
                 t.coverage_matrix = tifffile.imread(t_tiff_path)
