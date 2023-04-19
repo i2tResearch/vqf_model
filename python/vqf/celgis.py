@@ -1,7 +1,38 @@
 import requests
-
+import tifffile
+from models import Project
 
 class Celgis:
+
+    def __init__(self, client: "CelgisClient"):
+        self.client: "CelgisClient" = client
+        self.project = None
+
+    def list_projects(self) -> list[Project]:
+        json_projects = self.client.list_projects()
+        projects = [Project.from_api_dict(j) for j in json_projects]
+        return projects
+    
+    def load_project(self, id) -> Project:
+        json_project = self.client.get_project(id)
+        project = Project.from_api_dict_detailed(json_project)
+
+        tiff_bin = self.client.get_project_tiff(id)
+        tiff_path = "./tmp/project.tiff"
+        open(tiff_path, "wb").write(tiff_bin)
+        project.coverage_matrix = tifffile.imread(tiff_path)
+
+        for s in project.sites:
+            for t in s.transmitters:
+                t_tiff_bin = self.client.get_transmitter_tiff(t.id)
+                t_tiff_path = f"./tmp/transmitter_{t.id}.tiff"
+                open(t_tiff_path, "wb").write(t_tiff_bin)
+                t.coverage_matrix = tifffile.imread(t_tiff_path)
+
+        return project
+
+
+class CelgisClient:
 
     def __init__(self, api_url: str, username: str, password: str):
         self.api_url = api_url
