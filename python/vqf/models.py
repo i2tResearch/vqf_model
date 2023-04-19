@@ -66,6 +66,7 @@ class Project:
         self.simulated: bool = simulated
         self.sites: list["Site"] = []
         self.coverage_matrix: list[list[float]] = []
+        self.distribution_matrix: list[list[int]] = []
 
     def __str__(self):
         return f"{self.id} {self.name} ({self.propagation_model}, THR {self.threshold}, ARH {self.avg_receiver_height})"

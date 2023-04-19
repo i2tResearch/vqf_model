@@ -45,6 +45,9 @@ def run_vqf(api_url, username, password):
             print("Transmitter", t)
             print_matrix(t.coverage_matrix)
 
+    print("Distribution")
+    print_matrix(project.distribution_matrix)
+
     print("End")
 
 

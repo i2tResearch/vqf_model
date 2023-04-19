@@ -1,6 +1,8 @@
 import requests
 import tifffile
 from models import Project
+import numpy as np
+
 
 class Celgis:
 
@@ -12,7 +14,7 @@ class Celgis:
         json_projects = self.client.list_projects()
         projects = [Project.from_api_dict(j) for j in json_projects]
         return projects
-    
+
     def load_project(self, id) -> Project:
         json_project = self.client.get_project(id)
         project = Project.from_api_dict_detailed(json_project)
@@ -24,10 +26,17 @@ class Celgis:
 
         for s in project.sites:
             for t in s.transmitters:
-                t_tiff_bin = self.client.get_transmitter_tiff(t.id)
+                t_tiff_bin = self.client.get_transmitter_tiff(id, t.id)
+                print(t_tiff_bin)
                 t_tiff_path = f"./tmp/transmitter_{t.id}.tiff"
                 open(t_tiff_path, "wb").write(t_tiff_bin)
                 t.coverage_matrix = tifffile.imread(t_tiff_path)
+
+        d_tiff_bin = self.client.get_transmitter_distribution_tiff(id)
+        d_tiff_path = f"./tmp/transmitter_distribution.tiff"
+        open(d_tiff_path, "wb").write(d_tiff_bin)
+        distribution_matrix = np.array(tifffile.imread(d_tiff_path)).astype(int)
+        project.distribution_matrix = distribution_matrix
 
         return project
 
@@ -73,7 +82,12 @@ class CelgisClient:
         response = requests.get(url, headers=self.headers)
         return response.content
 
-    def get_transmitter_tiff(self, id):
-        url = f"{self.api_url}/transmitters/{id}/tiff"
+    def get_transmitter_tiff(self, id, tid):
+        url = f"{self.api_url}/projects/{id}/transmitters/{tid}/tiff"
+        response = requests.get(url, headers=self.headers)
+        return response.content
+    
+    def get_transmitter_distribution_tiff(self, id):
+        url = f"{self.api_url}/projects/{id}/transmitters/tiff"
         response = requests.get(url, headers=self.headers)
         return response.content
