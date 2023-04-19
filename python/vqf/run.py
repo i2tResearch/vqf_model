@@ -1,5 +1,10 @@
-import click
+from vqf import Optimizer
 from celgis import Celgis, CelgisClient
+import click
+import logging
+
+
+logging.basicConfig(filename="./tmp/vqf_logs.log", level=logging.DEBUG)
 
 
 @click.command()
@@ -38,15 +43,15 @@ def run_vqf(api_url, username, password):
 
     print("=================================================")
     print("Project", project)
-    print_matrix(project.coverage_matrix)
     for s in project.sites:
         print("Site", s)
         for t in s.transmitters:
             print("Transmitter", t)
-            print_matrix(t.coverage_matrix)
 
-    print("Distribution")
-    print_matrix(project.distribution_matrix)
+    print("=================================================")
+    optimizer = Optimizer(
+        project, "../../minizinc/models/vqf_simplified_hata.mzn", "gecode")
+    optimizer.build_parameters()
 
     print("End")
 
