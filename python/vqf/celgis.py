@@ -34,7 +34,8 @@ class Celgis:
         d_tiff_bin = self.client.get_transmitter_distribution_tiff(id)
         d_tiff_path = f"./tmp/transmitter_distribution.tiff"
         open(d_tiff_path, "wb").write(d_tiff_bin)
-        distribution_matrix = np.array(tifffile.imread(d_tiff_path)).astype(int)
+        tiff_data = tifffile.imread(d_tiff_path)
+        distribution_matrix = np.array(tiff_data).astype(int)
         project.distribution_matrix = distribution_matrix
 
         return project
@@ -85,7 +86,7 @@ class CelgisClient:
         url = f"{self.api_url}/projects/{id}/transmitters/{tid}/tiff"
         response = requests.get(url, headers=self.headers)
         return response.content
-    
+
     def get_transmitter_distribution_tiff(self, id):
         url = f"{self.api_url}/projects/{id}/transmitters/tiff"
         response = requests.get(url, headers=self.headers)
