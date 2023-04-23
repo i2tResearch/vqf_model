@@ -12,8 +12,6 @@ set of int: i = 1..N;
 % Número de puntos en los que se harán mediciones de señal e índice
 int: M;
 set of int: k = 1..M;
-% Distancia entre la i-ésima estación base y el k-ésimo punto de medición
-array[i, k] of float: d_ik;
 % Población que demanda servicio en el punto k
 array[k] of int: pob_k;
 % Índice de antenas

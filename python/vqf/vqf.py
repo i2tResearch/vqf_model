@@ -51,7 +51,7 @@ class Optimizer:
         # Flag que indica si el punto k tiene cobertura de alguna radiobase. bool
         instance["C_k"] = self.c_k
         # Indica si la radiobase i cubre el punto k
-        instance["lRbs_ik"] = self.build_lRbs_ik()
+        instance["lRbs_ik"] = self.lrbs_ik
         # Si lRbs_ik, indica el índice h de la antena que lo cubre
         instance["lAnt_ik"] = self.lant_ik
         # Nivel de señal que desde la antena lAnt_ik llega al punto
@@ -60,6 +60,9 @@ class Optimizer:
         instance["lFlgCob_ik"] = self.lflgcob_ik
         # Índice de la radiobase que brinda el nivel de señal más alto en el punto k
         instance["indDesSig_k"] = self.inddessig_k
+
+        result = instance.solve()
+        return result
 
     def build_parameters(self):
         c_k = []
@@ -85,7 +88,7 @@ class Optimizer:
                 for row in t.coverage_matrix:
                     for lsig_value in row:  # cada punto es una k con potencia lsig_value
                         lrsb_value = 1 if lsig_value > self.project.threshold else 0
-                        lant_value = h if lrsb_value == 1 else -1
+                        lant_value = h + 1 if lrsb_value == 1 else 0  # MiniZinc usa arreglos de base 1
                         lflgcob_value = lrsb_value
                         lrbs_i.append(lrsb_value)
                         lant_i.append(lant_value)
