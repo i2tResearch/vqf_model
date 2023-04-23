@@ -29,6 +29,8 @@ class Optimizer:
         gecode = Solver.lookup(self.solver)
         instance = Instance(gecode, model)
 
+        # Variables de entrada
+
         # Número de estaciones base; índice i. int
         instance["N"] = len(self.project.sites)
         # Número de puntos en los que se harán mediciones de señal; índice k. int
@@ -48,6 +50,9 @@ class Optimizer:
         instance["W1"] = 1
         # Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido
         instance["W2"] = 1
+
+        # Estructuras de datos. TODO: Entregar las estructuras desde Celgis. Hacer llamado dinámico a celgis
+
         # Flag que indica si el punto k tiene cobertura de alguna radiobase. bool
         instance["C_k"] = self.c_k
         # Indica si la radiobase i cubre el punto k
