@@ -99,8 +99,12 @@ function float: cost231_okumura_hata(float: freq, float: tx_height, float: rx_he
   - (44.9 - 6.55 * log10(tx_height)) * log10(distance)
   + city_size_factor;
 
-array[i, k] of float: pathLoss = array2d(i, k,
-  [cost231_okumura_hata(lFreq_ih[I, lAnt_ik[I, K]], lHeight_ih[I, lAnt_ik[I, K]], pobHeight, d_ik[I, K], citySizeFactor) | I in i, K in k]);
+array[i, k] of float: pathLoss = array2d(i, k, [
+  (
+    if lAnt_ik[I, K] > 0 then 
+    cost231_okumura_hata(lFreq_ih[I, lAnt_ik[I, K]], lHeight_ih[I, lAnt_ik[I, K]], pobHeight, d_ik[I, K], citySizeFactor)
+    else 0 endif
+  ) | I in i, K in k]);
 
 %%%%%%%%%%%%%%%%%%%% Función objetivo %%%%%%%%%%%%%%%%%%%%
 
