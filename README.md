@@ -26,3 +26,5 @@ Modelo en MiniZinc para el proyecto VQF.
 * click: Manejo de propiedades de la CLI
 * tifffile: Acceso a archivos TIFF
 * imagecodecs: Requerimiento de tifffile
+* rasterio: Obtener coordenadas desde el TIFF
+* geopy: Obtener distancias entre coordenadas
