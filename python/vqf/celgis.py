@@ -2,6 +2,7 @@ import requests
 import tifffile
 from models import Project
 import numpy as np
+import rasterio
 
 
 class Celgis:
@@ -37,6 +38,10 @@ class Celgis:
         tiff_data = tifffile.imread(d_tiff_path)
         distribution_matrix = np.array(tiff_data).astype(int)
         project.distribution_matrix = distribution_matrix
+
+        with rasterio.open(d_tiff_path) as dataset:
+            transform = dataset.transform
+            project.transformation_matrix = transform
 
         return project
 

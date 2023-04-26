@@ -67,6 +67,7 @@ class Project:
         self.sites: list["Site"] = []
         self.coverage_matrix: list[list[float]] = []
         self.distribution_matrix: list[list[int]] = []
+        self.transformation_matrix = []
 
     def __str__(self):
         return f"{self.id} {self.name} ({self.propagation_model}, THR {self.threshold}, ARH {self.avg_receiver_height})"
@@ -90,3 +91,7 @@ class Project:
             return len(self.coverage_matrix) * len(self.coverage_matrix[0])
         else:
             return 0
+
+    def index_to_coordinates(self, x, y):
+        lon, lat = self.transformation_matrix * (x, y)
+        return (lat, lon)
