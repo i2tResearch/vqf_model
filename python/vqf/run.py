@@ -50,7 +50,7 @@ def run_vqf(api_url, username, password):
 
     print("=================================================")
     optimizer = Optimizer(
-        project, "../../minizinc/models/vqf_simplified.mzn", "gecode")
+        project, "../../minizinc/models/vqf_hata.mzn", "gecode")
     optimizer.build_parameters()
     result = optimizer.optimize(10, 1)
     print(result)

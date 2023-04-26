@@ -15,12 +15,16 @@ class Optimizer:
         self.model_path = model_path
         self.solver = solver
 
+        self.d_ik = []
         self.c_k = []
         self.lrbs_ik = []
         self.lant_ik = []
         self.lsig_ik = []
         self.lflgcob_ik = []
         self.inddessig_k = []
+
+        self.lfreq_ih = []
+        self.lheight_ih = []
 
         self.build_parameters()
 
@@ -35,6 +39,8 @@ class Optimizer:
         instance["N"] = len(self.project.sites)
         # Número de puntos en los que se harán mediciones de señal; índice k. int
         instance["M"] = self.project.number_of_points()
+        # Distancia entre la i-ésima estación base y el k-ésimo punto de medición
+        instance["d_ik"] = self.d_ik
         # Población que demanda servicio en el punto k. int
         instance["pob_k"] = [1] * self.project.number_of_points()
         # Número de Sectores disponibles para prestar el servicio. int
@@ -66,16 +72,25 @@ class Optimizer:
         # Índice de la radiobase que brinda el nivel de señal más alto en el punto k
         instance["indDesSig_k"] = self.inddessig_k
 
+        # Hata model
+        instance["lFreq_ih"] = self.lfreq_ih
+        instance["lHeight_ih"] = self.lheight_ih
+        instance["pobHeight"] = 3
+        instance["citySizeFactor"] = 2
+
         result = instance.solve()
         return result
 
     def build_parameters(self):
+        d_ik = []
         c_k = []
         lrbs_ik = []
         lant_ik = []
         lsig_ik = []
         lflgcob_ik = []
         inddessig_k = []
+        lfreq_ih = []
+        lheight_ih = []
 
         for row in self.project.distribution_matrix:
             for value in row:
@@ -85,28 +100,44 @@ class Optimizer:
                 inddessig_k.append(inddessig_value)
 
         for s in self.project.sites:  # cada sitio es una i
+            d_i = []
             lrbs_i = []
             lant_i = []
             lsig_i = []
             lflgcob_i = []
+            lfreq_i = []
+            lheight_i = []
+
             for h, t in enumerate(s.transmitters):  # cada transmisor es una h
                 for row in t.coverage_matrix:
-                    for lsig_value in row:  # cada punto es una k con potencia lsig_value
-                        lrsb_value = 1 if lsig_value > self.project.threshold else 0
-                        lant_value = h + 1 if lrsb_value == 1 else 0  # MiniZinc usa arreglos de base 1
-                        lflgcob_value = lrsb_value
-                        lrbs_i.append(lrsb_value)
-                        lant_i.append(lant_value)
-                        lsig_i.append(lsig_value)
-                        lflgcob_i.append(lflgcob_value)
+                    for lsig_k_value in row:  # cada punto es una k con potencia lsig_k_value
+                        d_i.append(t.height) # TODO: calculate distance
+                        lrsb_k_value = 1 if lsig_k_value > self.project.threshold else 0
+                        lant_k_value = h + 1 if lrsb_k_value == 1 else 0  # MiniZinc usa arreglos de base 1
+                        lflgcob_k_value = lrsb_k_value
+                        lrbs_i.append(lrsb_k_value)
+                        lant_i.append(lant_k_value)
+                        lsig_i.append(lsig_k_value)
+                        lflgcob_i.append(lflgcob_k_value)
+
+                lfreq_i.append(t.frequency)
+                lheight_i.append(t.height)
+
+            d_ik.append(d_i)
             lrbs_ik.append(lrbs_i)
             lant_ik.append(lant_i)
             lsig_ik.append(lsig_i)
             lflgcob_ik.append(lflgcob_i)
 
+            lfreq_ih.append(lfreq_i)
+            lheight_ih.append(lheight_i)
+
+        self.d_ik = d_ik
         self.c_k = c_k
         self.lrbs_ik = lrbs_ik
         self.lant_ik = lant_ik
         self.lsig_ik = lsig_ik
         self.lflgcob_ik = lflgcob_ik
         self.inddessig_k = inddessig_k
+        self.lfreq_ih = lfreq_ih
+        self.lheight_ih = lheight_ih
