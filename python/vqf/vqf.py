@@ -6,6 +6,7 @@
 
 from minizinc import Instance, Model, Solver
 from models import Project
+from geopy import distance
 
 
 class Optimizer:
@@ -109,12 +110,16 @@ class Optimizer:
             lheight_i = []
 
             for h, t in enumerate(s.transmitters):  # cada transmisor es una h
-                for row in t.coverage_matrix:
-                    for lsig_k_value in row:  # cada punto es una k con potencia lsig_k_value
-                        d_i.append(t.height) # TODO: calculate distance
+                for x, row in enumerate(t.coverage_matrix):
+                    for y, lsig_k_value in enumerate(row):  # cada punto es una k con potencia lsig_k_value
+                        (lat, lon) = self.project.index_to_coordinates(x, y)
+                        d_k_value = distance.distance((s.latitude, s.longitude), (lat, lon)).km
+
                         lrsb_k_value = 1 if lsig_k_value > self.project.threshold else 0
                         lant_k_value = h + 1 if lrsb_k_value == 1 else 0  # MiniZinc usa arreglos de base 1
                         lflgcob_k_value = lrsb_k_value
+                        
+                        d_i.append(d_k_value)
                         lrbs_i.append(lrsb_k_value)
                         lant_i.append(lant_k_value)
                         lsig_i.append(lsig_k_value)
