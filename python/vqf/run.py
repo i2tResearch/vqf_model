@@ -11,10 +11,12 @@ logging.basicConfig(filename="./tmp/vqf_logs.log", level=logging.DEBUG)
 @click.option("--api_url", default="http://172.28.16.1:8080/api", help="Celgis Url")
 @click.option("--username", help="Celgis username")
 @click.option("--password", help="Celgis password")
-def run_vqf(api_url, username, password):
+@click.option("--maxpow", default=100.0, help="Max allowed power")
+def run_vqf(api_url, username, password, maxpow):
     if username is None or password is None:
         username = click.prompt("Enter the username", type=str)
         password = click.prompt("Enter the password", type=str)
+        maxpow = click.prompt("Enter max power", type=float)
 
     print("=================== ODISEO/VQF ==================")
     print("Using API endpoint", api_url)
@@ -51,7 +53,7 @@ def run_vqf(api_url, username, password):
     print("=================================================")
     print("Building optimizer... this will take some time while we calculate the distances")
     optimizer = Optimizer(
-        project, "../../minizinc/models/vqf_okumura_hata.mzn", "gecode")
+        project, "../../minizinc/models/vqf_okumura_hata.mzn", "gecode", maxpow)
     optimizer.build_parameters()
 
     print("Running optimizer...")

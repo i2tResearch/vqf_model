@@ -11,10 +11,11 @@ from geopy import distance
 
 class Optimizer:
 
-    def __init__(self, project: Project, model_path: str, solver: str):
+    def __init__(self, project: Project, model_path: str, solver: str, maxpow: float):
         self.project = project
         self.model_path = model_path
         self.solver = solver
+        self.maxpow = maxpow
 
         self.d_ik = []
         self.c_k = []
@@ -61,6 +62,10 @@ class Optimizer:
         instance["W1"] = 1
         # Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido
         instance["W2"] = 1
+        # Potencia máxima permitida
+        instance["maxPot"] = self.maxpow
+
+        # Estado inicial del escenario
 
         # Flag que indica si el punto k tiene cobertura de alguna radiobase. bool
         instance["C_k"] = self.c_k
@@ -74,6 +79,8 @@ class Optimizer:
         instance["lFlgCob_ik"] = self.lflgcob_ik
         # Índice de la radiobase que brinda el nivel de señal más alto en el punto k
         instance["indDesSig_k"] = self.inddessig_k
+
+        # Variables de decisión. Se ingresan los valores iniciales
 
         # Azimuth de la h-ésima antena
         instance["AzAnt_ih"] = self.azant_ih

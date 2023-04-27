@@ -28,21 +28,23 @@ set of int: h = 1..P;
 int: W1 = 1;
 % Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido
 int: W2 = 1;
+% Potencia máxima permitida
+float: maxPot;
 
-%%%%%%%%%%%%%%%%%%%% Estructuras de Datos %%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Estado inicial del escenario %%%%%%%%%%%%%%%%%%%%
 
 % Flag que indica si el punto k tiene cobertura de alguna radiobase
-array[k] of var 0..1: C_k;
+array[k] of 0..1: C_k;
 % Indica si la radiobase i cubre el punto k
-array[i, k] of var 0..1: lRbs_ik;
+array[i, k] of 0..1: lRbs_ik;
 % Si lRbs_ik, indica el índice h de la antena que lo cubre
-array[i, k] of var int: lAnt_ik;
+array[i, k] of int: lAnt_ik;
 % Nivel de señal que desde la antena lAnt_ik llega al punto
 array[i, k] of float: lSig_ik;
 % Indica si lSig_ik supera el umbral de cobertura
-array[i, k] of var 0..1: lFlgCob_ik;
+array[i, k] of 0..1: lFlgCob_ik;
 % Índice de la radiobase que brinda el nivel de señal más alto en el punto k
-array[k] of var int: indDesSig_k;
+array[k] of int: indDesSig_k;
 
 %%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
 
@@ -75,12 +77,14 @@ constraint forall(K in k)
   (min(lFlgCob_ik[.., K]) = 1 <-> (sum(I in i)(lFlgCob_ik[I, K]) >= minSol));
 
 % Restricción de azimut por sector de antena
-constraint forall(I in i)
-  (AzAnt_ih[I, 1] >= 0 /\ AzAnt_ih[I, 1] <= 119);
-constraint forall(I in i)
-  (AzAnt_ih[I, 2] >= 120 /\ AzAnt_ih[I, 2] <= 239);
-constraint forall(I in i)
-  (AzAnt_ih[I, 3] >= 240 /\ AzAnt_ih[I, 3] <= 359);
+array[int] of float: az_min = [0.0, 120.0, 240.0];
+array[int] of float: az_max = [119.0, 239.0, 359.0];
+constraint forall(I in i, H in h)
+  (if H <= 3 then AzAnt_ih[I, H] >= az_min[H] /\ AzAnt_ih[I, H] <= az_max[I] else true endif);
+
+% Restricción de potencia
+constraint forall(I in i, H in h)
+  (Pot_ih[I, H] <= maxPot /\ Pot_ih[I, H] >= UmbCob);
 
 %%%%%%%%%%%%%%%%%%%% Modelo de propagación Okumura-Hata %%%%%%%%%%%%%%%%%%%%
 
