@@ -94,7 +94,7 @@ class Optimizer:
         # Potencia de la h-ésima antena
         instance["Pot_ih"] = self.pot_ih
 
-        result = instance.solve(intermediate_solutions=True)
+        result = instance.solve()
         return result
 
     def build_parameters(self):

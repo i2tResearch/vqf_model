@@ -60,7 +60,7 @@ def run_vqf(api_url, username, password, maxpow):
     result = optimizer.optimize()
 
     print("=================================================")
-    print("Result: ", result)
+    print(result)
 
     print("End")
 
