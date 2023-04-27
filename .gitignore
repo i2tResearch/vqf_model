@@ -131,3 +131,5 @@ dmypy.json
 # docx temp file
 ~$*
 .~lock*
+
+notes.txt
