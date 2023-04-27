@@ -57,7 +57,7 @@ def run_vqf(api_url, username, password, maxpow):
     optimizer.build_parameters()
 
     print("Running optimizer...")
-    result = optimizer.optimize(10, 1)
+    result = optimizer.optimize()
 
     print("=================================================")
     print("Result: ", result)

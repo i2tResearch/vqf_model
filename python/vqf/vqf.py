@@ -34,7 +34,7 @@ class Optimizer:
 
         self.build_parameters()
 
-    def optimize(self, max_sol: int, min_sol: int):
+    def optimize(self):
         model = Model(self.model_path)
         gecode = Solver.lookup(self.solver)
         instance = Instance(gecode, model)
@@ -50,9 +50,9 @@ class Optimizer:
         # Población que demanda servicio en el punto k. int
         instance["pob_k"] = [1] * self.project.number_of_points()
         # Número de Sectores disponibles para prestar el servicio. int
-        instance["maxSol"] = max_sol
+        instance["maxSol"] = self.project.number_of_points()
         # Número mínimo de sectores que deberían poder atender el servicio. int
-        instance["minSol"] = min_sol
+        instance["minSol"] = 1
         # Umbral a partir del cual se puede definir si un punto tiene o no cobertura, dado en dBm. float
         instance["UmbCob"] = self.project.threshold
         # Número de antenas por estación base. int
@@ -64,6 +64,10 @@ class Optimizer:
         instance["W2"] = 1
         # Potencia máxima permitida
         instance["maxPot"] = self.maxpow
+        # Altura del terminal de usuario
+        instance["pobHeight"] = 3
+        # Factor de tamaño de ciudad para el modelo de propagación
+        instance["citySizeFactor"] = 2
 
         # Estado inicial del escenario
 
@@ -79,21 +83,16 @@ class Optimizer:
         instance["lFlgCob_ik"] = self.lflgcob_ik
         # Índice de la radiobase que brinda el nivel de señal más alto en el punto k
         instance["indDesSig_k"] = self.inddessig_k
-
-        # Variables de decisión. Se ingresan los valores iniciales
-
+        # Frecuencia de la antena de índice h en la radiobase k
+        instance["lFreq_ih"] = self.lfreq_ih
+        # Altura de la antena de índice h en la radiobase k
+        instance["lHeight_ih"] = self.lheight_ih
         # Azimuth de la h-ésima antena
         instance["AzAnt_ih"] = self.azant_ih
         # Elevación de la h-ésima antena. Positivo hacia abajo
         instance["ElAnt_ih"] = self.elant_ih
         # Potencia de la h-ésima antena
         instance["Pot_ih"] = self.pot_ih
-
-        # Hata model
-        instance["lFreq_ih"] = self.lfreq_ih
-        instance["lHeight_ih"] = self.lheight_ih
-        instance["pobHeight"] = 3
-        instance["citySizeFactor"] = 2
 
         result = instance.solve(intermediate_solutions=True)
         return result
