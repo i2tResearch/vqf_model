@@ -51,7 +51,7 @@ def run_vqf(api_url, username, password):
     print("=================================================")
     print("Building optimizer... this will take some time while we calculate the distances")
     optimizer = Optimizer(
-        project, "../../minizinc/models/vqf_hata.mzn", "gecode")
+        project, "../../minizinc/models/vqf_okumura_hata.mzn", "gecode")
     optimizer.build_parameters()
 
     print("Running optimizer...")
