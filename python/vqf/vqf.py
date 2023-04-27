@@ -24,6 +24,10 @@ class Optimizer:
         self.lflgcob_ik = []
         self.inddessig_k = []
 
+        self.azant_ih = []
+        self.elant_ih = []
+        self.pot_ih = []
+
         self.lfreq_ih = []
         self.lheight_ih = []
 
@@ -73,13 +77,20 @@ class Optimizer:
         # Índice de la radiobase que brinda el nivel de señal más alto en el punto k
         instance["indDesSig_k"] = self.inddessig_k
 
+        # Azimuth de la h-ésima antena
+        instance["AzAnt_ih"] = self.azant_ih
+        # Elevación de la h-ésima antena. Positivo hacia abajo
+        instance["ElAnt_ih"] = self.elant_ih
+        # Potencia de la h-ésima antena
+        instance["Pot_ih"] = self.pot_ih
+
         # Hata model
         instance["lFreq_ih"] = self.lfreq_ih
         instance["lHeight_ih"] = self.lheight_ih
         instance["pobHeight"] = 3
         instance["citySizeFactor"] = 2
 
-        result = instance.solve()
+        result = instance.solve(intermediate_solutions=True)
         return result
 
     def build_parameters(self):
@@ -90,6 +101,9 @@ class Optimizer:
         lsig_ik = []
         lflgcob_ik = []
         inddessig_k = []
+        azant_ih = []
+        elant_ih = []
+        pot_ih = []
         lfreq_ih = []
         lheight_ih = []
 
@@ -106,25 +120,34 @@ class Optimizer:
             lant_i = []
             lsig_i = []
             lflgcob_i = []
+            azant_i = []
+            elant_i = []
+            pot_i = []
             lfreq_i = []
             lheight_i = []
 
             for h, t in enumerate(s.transmitters):  # cada transmisor es una h
                 for x, row in enumerate(t.coverage_matrix):
-                    for y, lsig_k_value in enumerate(row):  # cada punto es una k con potencia lsig_k_value
+                    # cada punto es una k con potencia lsig_k_value
+                    for y, lsig_k_value in enumerate(row):
                         (lat, lon) = self.project.index_to_coordinates(x, y)
-                        d_k_value = distance.distance((s.latitude, s.longitude), (lat, lon)).km
+                        d_k_value = distance.distance(
+                            (s.latitude, s.longitude), (lat, lon)).km
 
                         lrsb_k_value = 1 if lsig_k_value > self.project.threshold else 0
-                        lant_k_value = h + 1 if lrsb_k_value == 1 else 0  # MiniZinc usa arreglos de base 1
+                        # MiniZinc usa arreglos de base 1
+                        lant_k_value = h + 1 if lrsb_k_value == 1 else 0
                         lflgcob_k_value = lrsb_k_value
-                        
+
                         d_i.append(d_k_value)
                         lrbs_i.append(lrsb_k_value)
                         lant_i.append(lant_k_value)
                         lsig_i.append(lsig_k_value)
                         lflgcob_i.append(lflgcob_k_value)
 
+                azant_i.append(t.azimuth)
+                elant_i.append(t.tilt)
+                pot_i.append(t.power)
                 lfreq_i.append(t.frequency)
                 lheight_i.append(t.height)
 
@@ -134,6 +157,9 @@ class Optimizer:
             lsig_ik.append(lsig_i)
             lflgcob_ik.append(lflgcob_i)
 
+            azant_ih.append(azant_i)
+            elant_ih.append(elant_i)
+            pot_ih.append(pot_i)
             lfreq_ih.append(lfreq_i)
             lheight_ih.append(lheight_i)
 
@@ -144,5 +170,8 @@ class Optimizer:
         self.lsig_ik = lsig_ik
         self.lflgcob_ik = lflgcob_ik
         self.inddessig_k = inddessig_k
+        self.azant_ih = azant_ih
+        self.elant_ih = elant_ih
+        self.pot_ih = pot_ih
         self.lfreq_ih = lfreq_ih
         self.lheight_ih = lheight_ih
