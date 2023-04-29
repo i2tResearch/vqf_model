@@ -11,10 +11,9 @@ from geopy import distance
 
 class Optimizer:
 
-    def __init__(self, project: Project, model_path: str, solver: str, maxpow: float):
+    def __init__(self, project: Project, model_path: str, maxpow: float):
         self.project = project
         self.model_path = model_path
-        self.solver = solver
         self.maxpow = maxpow
 
         self.d_ik = []
@@ -34,10 +33,10 @@ class Optimizer:
 
         self.build_parameters()
 
-    def optimize(self):
+    def optimize(self, solver_name):
         model = Model(self.model_path)
-        gecode = Solver.lookup(self.solver)
-        instance = Instance(gecode, model)
+        solver = Solver.lookup(solver_name)
+        instance = Instance(solver, model)
 
         # Variables de entrada
 
