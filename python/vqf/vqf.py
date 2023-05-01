@@ -26,6 +26,7 @@ class Optimizer:
 
         self.azant_ih = []
         self.elant_ih = []
+        self.gaant_ih = []
         self.pot_ih = []
 
         self.lfreq_ih = []
@@ -51,7 +52,7 @@ class Optimizer:
         # Número de Sectores disponibles para prestar el servicio. int
         instance["maxSol"] = self.project.number_of_points()
         # Número mínimo de sectores que deberían poder atender el servicio. int
-        instance["minSol"] = 1
+        instance["minSol"] = self.project.number_of_points() // 4
         # Umbral a partir del cual se puede definir si un punto tiene o no cobertura, dado en dBm. float
         instance["UmbCob"] = self.project.threshold
         # Número de antenas por estación base. int
@@ -90,6 +91,8 @@ class Optimizer:
         instance["AzAnt_ih"] = self.azant_ih
         # Elevación de la h-ésima antena. Positivo hacia abajo
         instance["ElAnt_ih"] = self.elant_ih
+        # Ganancia de la h-ésima antena
+        instance["GaAnt_ih"] = self.gaant_ih
         # Potencia de la h-ésima antena
         instance["Pot_ih"] = self.pot_ih
 
@@ -106,6 +109,7 @@ class Optimizer:
         inddessig_k = []
         azant_ih = []
         elant_ih = []
+        gaant_ih = []
         pot_ih = []
         lfreq_ih = []
         lheight_ih = []
@@ -125,6 +129,7 @@ class Optimizer:
             lflgcob_i = []
             azant_i = []
             elant_i = []
+            gaant_i = []
             pot_i = []
             lfreq_i = []
             lheight_i = []
@@ -150,6 +155,7 @@ class Optimizer:
 
                 azant_i.append(t.azimuth)
                 elant_i.append(t.tilt)
+                gaant_i.append(t.gain)
                 pot_i.append(t.power)
                 lfreq_i.append(t.frequency)
                 lheight_i.append(t.height)
@@ -162,6 +168,7 @@ class Optimizer:
 
             azant_ih.append(azant_i)
             elant_ih.append(elant_i)
+            gaant_ih.append(gaant_i)
             pot_ih.append(pot_i)
             lfreq_ih.append(lfreq_i)
             lheight_ih.append(lheight_i)
@@ -175,6 +182,7 @@ class Optimizer:
         self.inddessig_k = inddessig_k
         self.azant_ih = azant_ih
         self.elant_ih = elant_ih
+        self.gaant_ih = gaant_ih
         self.pot_ih = pot_ih
         self.lfreq_ih = lfreq_ih
         self.lheight_ih = lheight_ih
