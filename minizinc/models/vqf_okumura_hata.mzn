@@ -65,12 +65,14 @@ array[i, h] of float: lHeight_ih;
 array[i, h] of 0.0..359.0: AzAnt_ih;
 % Elevación de la h-ésima antena. Positivo hacia abajo
 array[i, h] of -10.0..45.0: ElAnt_ih;
+% Ganancia de la h-ésima antena
+array[i, h] of float: GaAnt_ih;
 % Potencia de la h-ésima antena
 array[i, h] of float: Pot_ih;
 % Total población atendida
 int: total_pob_inicial = sum(K in k)(C_k[K] * pob_k[K]);
 % Total puntos con cobertura superior al mínimo definido
-int: total_kcob_inicial = sum(K in k)(min(lFlgCob_ik[.., K]));
+int: total_kcob_inicial = sum(K in k)(max(lFlgCob_ik[.., K]));
 % Objetivo con pesos
 float: objetivo_inicial = W1 * total_pob_inicial + W2 * total_kcob_inicial;
 
@@ -80,42 +82,44 @@ array[i, h, k] of float: pathLoss = array3d(i, h, k, [
   (cost231_okumura_hata(lFreq_ih[I, H], lHeight_ih[I, H], pobHeight, d_ik[I, K], citySizeFactor))
   | I in i, H in h, K in k]);
 
+array[i, h, k] of float: antennaGain = array3d(i, h, k, [
+  (GaAnt_ih[I, H]) | I in i, H in h, K in k]);
+
 % %%%%%%%%%%%%%%%%%%%% Cálculos teóricos del escenario inicial. Marcados con _a %%%%%%%%%%%%%%%%%%%%
 
-array[i, h, k] of float: lSig_ihk_a = array3d(i, h, k, [(Pot_ih[I, H] - pathLoss[I, H, K]) | I in i, H in h, K in k]);
+array[i, h, k] of float: lSig_ihk_a = array3d(i, h, k, [(Pot_ih[I, H] - pathLoss[I, H, K] + antennaGain[I, H, K]) | I in i, H in h, K in k]);
 array[i, k] of float: lSig_ik_a = array2d(i, k, [max(lSig_ihk_a[I, .., K]) | I in i, K in k]);
 array[i, k] of 0..1: lRbs_ik_a = array2d(i, k, [if lSig_ik_a[I, K] > UmbCob then 1 else 0 endif | I in i, K in k]);
 array[k] of 0..1: C_k_a = [max(lRbs_ik_a[.., K]) | K in k];
 array[i, k] of 0..1: lFlgCob_ik_a = array2d(i, k, [if lSig_ik_a[I, K] > UmbCob then 1 else 0 endif | I in i, K in k]);
 int: total_pob_a = sum(K in k)(C_k_a[K] * pob_k[K]);
-int: total_kcob_a = sum(K in k)(min(lFlgCob_ik_a[.., K]));
+int: total_kcob_a = sum(K in k)(max(lFlgCob_ik_a[.., K]));
 float: objetivo_a = W1 * total_pob_a + W2 * total_kcob_a;
 
 % %%%%%%%%%%%%%%%%%%%% Cálculos del escenario modificado. Marcados con _b %%%%%%%%%%%%%%%%%%%%
 
-array[i, h, k] of var float: lSig_ihk_b = array3d(i, h, k, [(Pot_ih_b[I, H] - pathLoss[I, H, K]) | I in i, H in h, K in k]);
+array[i, h, k] of var float: lSig_ihk_b = array3d(i, h, k, [(Pot_ih_b[I, H] - pathLoss[I, H, K] + antennaGain[I, H, K]) | I in i, H in h, K in k]);
 array[i, k] of var float: lSig_ik_b = array2d(i, k, [max(lSig_ihk_b[I, .., K]) | I in i, K in k]);
 array[i, k] of var 0..1: lRbs_ik_b = array2d(i, k, [if lSig_ik_b[I, K] > UmbCob then 1 else 0 endif | I in i, K in k]);
 array[k] of var 0..1: C_k_b = [max(lRbs_ik_b[.., K]) | K in k];
 array[i, k] of var 0..1: lFlgCob_ik_b = array2d(i, k, [if lSig_ik_b[I, K] > UmbCob then 1 else 0 endif | I in i, K in k]);
 var int: total_pob_b = sum(K in k)(C_k_b[K] * pob_k[K]);
-var int: total_kcob_b = sum(K in k)(min(lFlgCob_ik_b[.., K]));
+var int: total_kcob_b = sum(K in k)(max(lFlgCob_ik_b[.., K]));
 var float: objetivo_b = W1 * total_pob_b + W2 * total_kcob_b;
 
 % %%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
 
 array[i, h] of var UmbCob..maxPot: Pot_ih_b;
 % array[i, h] of var 0.0..359.0: AzAnt_ih_b = AzAnt_ih;
-% array[i, h] of var -10.0..45.0: ElAnt_ih_b = ElAnt_ih;
+% array[i, h] of var 0..45: ElAnt_ih_b = ElAnt_ih;
 
 %%%%%%%%%%%%%%%%%%%% Restricciones %%%%%%%%%%%%%%%%%%%%
 
-% Un mejor objetivo, cualquiera sea la diferencia
-constraint objetivo_b > objetivo_a;
+constraint total_kcob_b >= minSol;
 
-% Restricción en la variación de potencia para cada antena
-constraint forall(I in i, H in h)
-  (Pot_ih_b[I, H] >= Pot_ih[I, H] - 10.0 /\ Pot_ih_b[I, H] <= Pot_ih[I, H] + 10.0);
+% Un mejor objetivo
+constraint objetivo_b > objetivo_a;
+constraint objetivo_b > objetivo_inicial;
 
 %%%%%%%%%%%%%%%%%%%% Otros resultados de validación %%%%%%%%%%%%%%%%%%%%
 
@@ -128,18 +132,29 @@ var float: min_lSig_ik_a = min(lSig_ik_a[.., ..]);
 var float: max_lSig_ik_b = max(lSig_ik_b[.., ..]);
 var float: min_lSig_ik_b = min(lSig_ik_b[.., ..]);
 
+var float: max_pathloss = max(pathLoss[.., .., ..]);
+var float: min_pathloss = min(pathLoss[.., .., ..]);
+
+var float: max_distance = max(d_ik[.., ..]);
+var float: min_distance = min(d_ik[.., ..]);
+
 output ["Resultados"] ++
   ["\nDe Celgis"] ++
   ["\nValor objetivo: \(objetivo_inicial). Población: \(total_pob_inicial). Puntos: \(total_kcob_inicial)"] ++
-  ["\nPotencias: "] ++ [show_float(0, 2, Pot_ih[I, H]) | I in i, H in h] ++
+  ["\nPotencias: "] ++ [show_float(0, 2, Pot_ih[I, H]) ++ " " | I in i, H in h] ++
   ["\nMínimos y máximos: "] ++ ["\(min_lSig_ik), \(max_lSig_ik)"] ++
   ["\n=========="] ++
   ["\nTeórico según datos de Celgis"] ++
+  ["\nPotencias: "] ++ [show_float(0, 2, Pot_ih[I, H]) ++ " " | I in i, H in h] ++
   ["\nValor objetivo: \(objetivo_a). Población: \(total_pob_a). Puntos: \(total_kcob_a)"] ++
   ["\nMínimos y máximos: "] ++ ["\(min_lSig_ik_a), \(max_lSig_ik_a)"] ++
   ["\n=========="] ++
   ["\nOptimizado"] ++
   ["\nValor objetivo: \(objetivo_b). Población: \(total_pob_b). Puntos: \(total_kcob_b)"] ++
-  ["\nPotencias: "] ++ [show_float(0, 2, Pot_ih_b[I, H]) | I in i, H in h] ++
-  ["\nMínimos y máximos: "] ++ ["\(min_lSig_ik_b), \(max_lSig_ik_b)"]
+  ["\nPotencias: "] ++ [show_float(0, 2, Pot_ih_b[I, H]) ++ " " | I in i, H in h] ++
+  ["\nMínimos y máximos: "] ++ ["\(min_lSig_ik_b), \(max_lSig_ik_b)"] ++
+  ["\n=========="] ++
+  ["\nPropagación"] ++
+  ["\nPérdidas: "] ++ ["\(min_pathloss), \(max_pathloss)"] ++
+  ["\nDistancias: "] ++ ["\(min_distance), \(max_distance)"]
   ;
