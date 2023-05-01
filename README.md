@@ -12,6 +12,7 @@ Modelo en MiniZinc para el proyecto VQF.
 
 * El modelo está en el archivo [Formula Orquestadorv2_junio_2022.docx](./docs/Formula%20Orquestadorv2_junio_2022.docx)
 * [MiniZinc Handbook](https://www.minizinc.org/doc-2.6.4/en/index.html)
+* [Modelo de propagación Okumura-Hata COST 231](https://en.wikipedia.org/wiki/COST_Hata_model)
 
 ## Minizinc + Python
 
