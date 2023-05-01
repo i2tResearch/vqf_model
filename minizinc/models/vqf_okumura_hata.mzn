@@ -91,20 +91,16 @@ int: total_pob_a = sum(K in k)(C_k_a[K] * pob_k[K]);
 int: total_kcob_a = sum(K in k)(min(lFlgCob_ik_a[.., K]));
 float: objetivo_a = W1 * total_pob_a + W2 * total_kcob_a;
 
-% %%%%%%%%%%%%%%%%%%%% Datos del escenario modificado. Marcados con _b %%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%% Cálculos del escenario modificado. Marcados con _b %%%%%%%%%%%%%%%%%%%%
 
-% Flag que indica si el punto k tiene cobertura de alguna radiobase
-array[k] of var 0..1: C_k_b;
-% Indica si la radiobase i cubre el punto k
-array[i, k] of var 0..1: lRbs_ik_b;
-% Si lRbs_ik, indica el índice h de la antena que lo cubre
-% array[i, k] of var int: lAnt_ik_b;
-% Nivel de señal que desde la antena lAnt_ik llega al punto
-array[i, k] of var float: lSig_ik_b;
-% Indica si lSig_ik supera el umbral de cobertura
-array[i, k] of var 0..1: lFlgCob_ik_b;
-% Índice de la radiobase que brinda el nivel de señal más alto en el punto k
-% array[k] of var int: indDesSig_k_b;
+array[i, h, k] of var float: lSig_ihk_b = array3d(i, h, k, [(Pot_ih_b[I, H] - pathLoss[I, H, K]) | I in i, H in h, K in k]);
+array[i, k] of var float: lSig_ik_b = array2d(i, k, [max(lSig_ihk_b[I, .., K]) | I in i, K in k]);
+array[i, k] of var 0..1: lRbs_ik_b = array2d(i, k, [if lSig_ik_b[I, K] > UmbCob then 1 else 0 endif | I in i, K in k]);
+array[k] of var 0..1: C_k_b = [max(lRbs_ik_b[.., K]) | K in k];
+array[i, k] of var 0..1: lFlgCob_ik_b = array2d(i, k, [if lSig_ik_b[I, K] > UmbCob then 1 else 0 endif | I in i, K in k]);
+var int: total_pob_b = sum(K in k)(C_k_b[K] * pob_k[K]);
+var int: total_kcob_b = sum(K in k)(min(lFlgCob_ik_b[.., K]));
+var float: objetivo_b = W1 * total_pob_b + W2 * total_kcob_b;
 
 % %%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
 
@@ -113,66 +109,11 @@ array[i, k] of var 0..1: lFlgCob_ik_b;
 % Elevación de la h-ésima antena. Positivo hacia abajo
 % array[i, h] of var -10.0..45.0: ElAnt_ih_b = ElAnt_ih;
 % Potencia de la h-ésima antena
-array[i, h] of var float: Pot_ih_b = Pot_ih;
+array[i, h] of var UmbCob..maxPot: Pot_ih_b;
 
-% %%%%%%%%%%%%%%%%%%%% Restricciones %%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Restricciones %%%%%%%%%%%%%%%%%%%%
 
-% Radiobase cubre el punto
-constraint forall(I in i, K in k)
-  (lRbs_ik_b[I, K] = (if lSig_ik_b[I, K] > UmbCob then 1 else 0 endif));
-
-constraint forall(K in k)
-  (C_k_b[K] = max(lRbs_ik_b[.., K]));
-
-% Señal deseada en el punto k. 
-% El nivel de señal correspondiente al índice de la señal deseada debe ser el mayor de ellos
-% constraint forall(I in i, K in k)
-%   (indDesSig_k_b[K] = I <-> max(lSig_ik_b[.., K]) = lSig_ik_b[I, K]);
-
-% Sector cubre punto si y solo si el nivel de señal que de él llega al punto supera el umbral
-constraint forall(I in i, K in k)
-  (lFlgCob_ik_b[I, K] = (if lSig_ik_b[I, K] > UmbCob then 1 else 0 endif));
-
-% Cardinalidad del active set: total de puntos cubiertos
-% constraint sum(I in i, K in k)(lFlgCob_ik_b[I, K]) <= maxSol;
-% constraint forall(K in k)
-%   (min(lFlgCob_ik_b[.., K]) = 1 <-> (sum(I in i)(lFlgCob_ik_b[I, K]) >= minSol));
-
-% Restricción de azimut por sector de antena
-% array[int] of float: az_min = [0.0, 120.0, 240.0];
-% array[int] of float: az_max = [119.0, 239.0, 359.0];
-% constraint forall(I in i, H in h)
-%   (if H <= 3 then AzAnt_ih_b[I, H] >= az_min[H] /\ AzAnt_ih_b[I, H] <= az_max[I] else true endif);
-
-% Restricción de potencia
-constraint forall(I in i, H in h)
-  (
-    Pot_ih_b[I, H] > UmbCob /\ Pot_ih_b[I, H] <= maxPot /\
-    Pot_ih_b[I, H] > Pot_ih[I, H] - 1.0 /\ Pot_ih_b[I, H] <= Pot_ih[I, H] + 1.0
-  );
-
-%%%%%%%%%%%%%%%%%%%% Estimación del escenario B %%%%%%%%%%%%%%%%%%%%
-
-% Valores del escenario final
-array[i, h, k] of var float: lSig_ihk_b = array3d(i, h, k, [(Pot_ih_b[I, H] - pathLoss[I, H, K]) | I in i, H in h, K in k]);
-
-constraint forall(I in i, K in k)
-  (lSig_ik_b[I, K] = max(lSig_ihk_b[I, .., K]));
-
-%%%%%%%%%%%%%%%%%%%% Función objetivo %%%%%%%%%%%%%%%%%%%%
-
-% Total población atendida
-var int: total_pob_b = sum(K in k)(C_k_b[K] * pob_k[K]);
-% Total puntos con cobertura superior al mínimo definido
-var int: total_kcob_b = sum(K in k)(min(lFlgCob_ik_b[.., K]));
-% Objetivo con pesos
-var float: objetivo_b = W1 * total_pob_b + W2 * total_kcob_b;
-
-% constraint objetivo_b > objetivo_a;
-% constraint objetivo_b > objetivo_inicial;
-
-% solve maximize objetivo_b;
-% solve satisfy;
+constraint objetivo_b > objetivo_a;
 
 %%%%%%%%%%%%%%%%%%%% Otros resultados de validación %%%%%%%%%%%%%%%%%%%%
 
