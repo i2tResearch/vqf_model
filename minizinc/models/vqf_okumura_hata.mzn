@@ -104,12 +104,9 @@ var float: objetivo_b = W1 * total_pob_b + W2 * total_kcob_b;
 
 % %%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
 
-% Azimuth de la h-ésima antena
-% array[i, h] of var 0.0..359.0: AzAnt_ih_b = AzAnt_ih;
-% Elevación de la h-ésima antena. Positivo hacia abajo
-% array[i, h] of var -10.0..45.0: ElAnt_ih_b = ElAnt_ih;
-% Potencia de la h-ésima antena
 array[i, h] of var UmbCob..maxPot: Pot_ih_b;
+% array[i, h] of var 0.0..359.0: AzAnt_ih_b = AzAnt_ih;
+% array[i, h] of var -10.0..45.0: ElAnt_ih_b = ElAnt_ih;
 
 %%%%%%%%%%%%%%%%%%%% Restricciones %%%%%%%%%%%%%%%%%%%%
 
