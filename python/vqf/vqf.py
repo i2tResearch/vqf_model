@@ -67,7 +67,7 @@ class Optimizer:
         # Altura del terminal de usuario
         instance["pobHeight"] = 3
         # Factor de tamaño de ciudad para el modelo de propagación
-        instance["citySizeFactor"] = 2
+        instance["citySizeFactor"] = 0
 
         # Estado inicial del escenario
 
