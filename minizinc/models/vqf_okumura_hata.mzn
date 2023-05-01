@@ -110,7 +110,12 @@ array[i, h] of var UmbCob..maxPot: Pot_ih_b;
 
 %%%%%%%%%%%%%%%%%%%% Restricciones %%%%%%%%%%%%%%%%%%%%
 
+% Un mejor objetivo, cualquiera sea la diferencia
 constraint objetivo_b > objetivo_a;
+
+% Restricción en la variación de potencia para cada antena
+constraint forall(I in i, H in h)
+  (Pot_ih_b[I, H] >= Pot_ih[I, H] - 10.0 /\ Pot_ih_b[I, H] <= Pot_ih[I, H] + 10.0);
 
 %%%%%%%%%%%%%%%%%%%% Otros resultados de validación %%%%%%%%%%%%%%%%%%%%
 
@@ -123,12 +128,18 @@ var float: min_lSig_ik_a = min(lSig_ik_a[.., ..]);
 var float: max_lSig_ik_b = max(lSig_ik_b[.., ..]);
 var float: min_lSig_ik_b = min(lSig_ik_b[.., ..]);
 
-output ["Resultados"] ++ 
-  ["\nValor objetivo inicial: \(objetivo_inicial). Pob: \(total_pob_inicial). Puntos: \(total_kcob_inicial)"] ++
-  ["\nValor objetivo teorico inicial: \(objetivo_a). Pob: \(total_pob_a). Puntos: \(total_kcob_a)"] ++
-  ["\nValor objetivo final: \(objetivo_b). Pob: \(total_pob_b). Puntos: \(total_kcob_b)"] ++
-  ["\nPotencias iniciales: "] ++ [show_float(0, 2, Pot_ih[I, H]) | I in i, H in h] ++
-  ["\nPotencias finales: "] ++ [show_float(0, 2, Pot_ih_b[I, H]) | I in i, H in h] ++
-  ["\nMáximos (inicial, teórico y final): "] ++ ["\(max_lSig_ik), \(max_lSig_ik_b), \(max_lSig_ik_b)"] ++
-  ["\nMínimos (inicial, teórico y final): "] ++ ["\(min_lSig_ik), \(min_lSig_ik_b), \(min_lSig_ik_b)"]
+output ["Resultados"] ++
+  ["\nDe Celgis"] ++
+  ["\nValor objetivo: \(objetivo_inicial). Población: \(total_pob_inicial). Puntos: \(total_kcob_inicial)"] ++
+  ["\nPotencias: "] ++ [show_float(0, 2, Pot_ih[I, H]) | I in i, H in h] ++
+  ["\nMínimos y máximos: "] ++ ["\(min_lSig_ik), \(max_lSig_ik)"] ++
+  ["\n=========="] ++
+  ["\nTeórico según datos de Celgis"] ++
+  ["\nValor objetivo: \(objetivo_a). Población: \(total_pob_a). Puntos: \(total_kcob_a)"] ++
+  ["\nMínimos y máximos: "] ++ ["\(min_lSig_ik_a), \(max_lSig_ik_a)"] ++
+  ["\n=========="] ++
+  ["\nOptimizado"] ++
+  ["\nValor objetivo: \(objetivo_b). Población: \(total_pob_b). Puntos: \(total_kcob_b)"] ++
+  ["\nPotencias: "] ++ [show_float(0, 2, Pot_ih_b[I, H]) | I in i, H in h] ++
+  ["\nMínimos y máximos: "] ++ ["\(min_lSig_ik_b), \(max_lSig_ik_b)"]
   ;
