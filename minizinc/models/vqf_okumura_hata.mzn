@@ -5,7 +5,7 @@
 
 function float: cost231_okumura_hata(float: freq, float: tx_height, float: rx_height, float: distance, float: city_size_factor) =
   46.3 + 33.9 * log10(freq) - 13.82 * log10(tx_height)
-  - (1.1 * log10(freq) - 0.7) * rx_height
+  - (1.1 * log10(freq) - 0.7) * rx_height - (1.56 * log10(freq) - 0.8)
   - (44.9 - 6.55 * log10(tx_height)) * log10(distance)
   + city_size_factor;
 
