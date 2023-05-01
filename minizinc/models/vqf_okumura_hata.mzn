@@ -82,12 +82,12 @@ array[i, h, k] of float: pathLoss = array3d(i, h, k, [
   (cost231_okumura_hata(lFreq_ih[I, H], lHeight_ih[I, H], pobHeight, d_ik[I, K], citySizeFactor))
   | I in i, H in h, K in k]);
 
-array[i, h, k] of float: antennaGain = array3d(i, h, k, [
+array[i, h, k] of float: antennaGains = array3d(i, h, k, [
   (GaAnt_ih[I, H]) | I in i, H in h, K in k]);
 
 % %%%%%%%%%%%%%%%%%%%% Cálculos teóricos del escenario inicial. Marcados con _a %%%%%%%%%%%%%%%%%%%%
 
-array[i, h, k] of float: lSig_ihk_a = array3d(i, h, k, [(Pot_ih[I, H] - pathLoss[I, H, K] + antennaGain[I, H, K]) | I in i, H in h, K in k]);
+array[i, h, k] of float: lSig_ihk_a = array3d(i, h, k, [(Pot_ih[I, H] - pathLoss[I, H, K] + antennaGains[I, H, K]) | I in i, H in h, K in k]);
 array[i, k] of float: lSig_ik_a = array2d(i, k, [max(lSig_ihk_a[I, .., K]) | I in i, K in k]);
 array[i, k] of 0..1: lRbs_ik_a = array2d(i, k, [if lSig_ik_a[I, K] > UmbCob then 1 else 0 endif | I in i, K in k]);
 array[k] of 0..1: C_k_a = [max(lRbs_ik_a[.., K]) | K in k];
@@ -98,7 +98,7 @@ float: objetivo_a = W1 * total_pob_a + W2 * total_kcob_a;
 
 % %%%%%%%%%%%%%%%%%%%% Cálculos del escenario modificado. Marcados con _b %%%%%%%%%%%%%%%%%%%%
 
-array[i, h, k] of var float: lSig_ihk_b = array3d(i, h, k, [(Pot_ih_b[I, H] - pathLoss[I, H, K] + antennaGain[I, H, K]) | I in i, H in h, K in k]);
+array[i, h, k] of var float: lSig_ihk_b = array3d(i, h, k, [(Pot_ih_b[I, H] - pathLoss[I, H, K] + antennaGains[I, H, K]) | I in i, H in h, K in k]);
 array[i, k] of var float: lSig_ik_b = array2d(i, k, [max(lSig_ihk_b[I, .., K]) | I in i, K in k]);
 array[i, k] of var 0..1: lRbs_ik_b = array2d(i, k, [if lSig_ik_b[I, K] > UmbCob then 1 else 0 endif | I in i, K in k]);
 array[k] of var 0..1: C_k_b = [max(lRbs_ik_b[.., K]) | K in k];
