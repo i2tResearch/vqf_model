@@ -121,6 +121,8 @@ constraint total_kcob_b >= minSol;
 constraint objetivo_b > objetivo_a;
 constraint objetivo_b > objetivo_inicial;
 
+solve maximize objetivo_b;
+
 %%%%%%%%%%%%%%%%%%%% Otros resultados de validación %%%%%%%%%%%%%%%%%%%%
 
 var float: max_lSig_ik = max(lSig_ik[.., ..]);
