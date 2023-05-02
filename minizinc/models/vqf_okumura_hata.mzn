@@ -116,6 +116,7 @@ array[i, h] of var UmbCob..maxPot: Pot_ih_b;
 %%%%%%%%%%%%%%%%%%%% Restricciones %%%%%%%%%%%%%%%%%%%%
 
 constraint total_kcob_b >= minSol;
+constraint total_kcob_b <= maxSol;
 
 % Un mejor objetivo
 constraint objetivo_b > objetivo_a;
@@ -140,7 +141,7 @@ var float: min_pathloss = min(pathLoss[.., .., ..]);
 var float: max_distance = max(d_ik[.., ..]);
 var float: min_distance = min(d_ik[.., ..]);
 
-output ["Resultados"] ++
+output ["Resultados\n"] ++
   ["\nDe Celgis"] ++
   ["\nValor objetivo: \(objetivo_inicial). Población: \(total_pob_inicial). Puntos: \(total_kcob_inicial)"] ++
   ["\nPotencias: "] ++ [show_float(0, 2, Pot_ih[I, H]) ++ " " | I in i, H in h] ++

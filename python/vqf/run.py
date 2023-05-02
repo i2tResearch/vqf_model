@@ -14,48 +14,58 @@ logging.basicConfig(filename="./tmp/vqf_logs.log", level=logging.DEBUG)
 @click.option("--maxpow", default=100.0, help="Máxima potencia permitida (dBm)")
 @click.option("--randomize", default=False, help="Población aleatoria (falso = 1 por punto)")
 @click.option("--minsol", default=10, help="Número mínimo de sectores que deberían poder atender el servicio")
-def run_vqf(api_url, username, password, maxpow, randomize, minsol):
+@click.option("--maxsolfactor", default=1.0, help="Máximo porcentaje de sectores que deberían poder atender el servicio (1.0 = 100%)")
+def run_vqf(api_url, username, password, maxpow, randomize, minsol, maxsolfactor):
 
     print("=================== ODISEO/VQF ==================")
-    print("Using API endpoint", api_url)
+    print("Usando la URL de Celgis", api_url)
 
     celgis_client = CelgisClient(api_url, username, password)
     if (not celgis_client.is_active()):
-        print("Could not activate celgis client. Check api_url and credentials")
+        print("No fue posible activar Celgis. Revise la URL y las credenciales")
         return
     celgis = Celgis(celgis_client)
 
-    print("Celgis client is active")
-    print("Randomize population:", randomize)
+    print("Cliente Celgis activo")
 
     print("=================================================")
-    print("Available projects:")
+    print("Proyectos disponibles:")
 
     projects = celgis.list_projects()
     for i, p in enumerate(projects):
         print("\t", i, p)
 
     print("=================================================")
-    index = click.prompt("Enter the project index", type=int, default=0)
+    index = click.prompt("Indique el número de proyecto", type=int, default=0)
     project_id = projects[index].id
-    print("Selected project:", projects[index].id)
+    print("Proyecto seleccionado:", projects[index].id)
 
     project = celgis.load_project(project_id)
 
     print("=================================================")
-    print("Project", project)
+    print("Proyecto", project)
     for s in project.sites:
-        print("Site", s)
+        print("Sitio", s)
         for t in s.transmitters:
-            print("Transmitter", t)
+            print("Transmisor", t)
 
     print("=================================================")
-    print("Building optimizer... this will take some time while we calculate the distances")
+
+    actual_minSol = max(minsol, 1)
+    actual_maxSol = int(project.number_of_points() * maxsolfactor)
+
+    print("Población aleatoria:", randomize)
+    print("Puntos disponibles:", project.number_of_points())
+    print("minSol:", actual_minSol)
+    print("maxSol:", actual_maxSol)
+
+    print("=================================================")
+    print("Construyendo el optimizador... Puede tomar unos minutos mientras se calculan las distancias")
     optimizer = Optimizer(
-        project, "../../minizinc/models/vqf_okumura_hata.mzn", maxpow, randomize, minsol)
+        project, "../../minizinc/models/vqf_okumura_hata.mzn", maxpow, randomize, actual_minSol, actual_maxSol)
     optimizer.build_parameters()
 
-    print("Running optimizer...")
+    print("Ejecutando el optimizador...")
     result = optimizer.optimize("gecode")
 
     print("=================================================")
