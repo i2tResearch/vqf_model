@@ -33,9 +33,9 @@ float: UmbCob;
 int: P;
 set of int: h = 1..P;
 % Peso del objetivo Cantidad de población atendida
-float: W1;
+int: W1;
 % Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido
-float: W2;
+int: W2;
 % Potencia máxima permitida
 float: maxPot;
 % Altura del terminal de usuario
@@ -105,7 +105,7 @@ array[k] of var 0..1: C_k_b = [max(lRbs_ik_b[.., K]) | K in k];
 array[i, k] of var 0..1: lFlgCob_ik_b = array2d(i, k, [if lSig_ik_b[I, K] > UmbCob then 1 else 0 endif | I in i, K in k]);
 var int: total_pob_b = sum(K in k)(C_k_b[K] * pob_k[K]);
 var int: total_kcob_b = sum(K in k)(max(lFlgCob_ik_b[.., K]));
-var float: objetivo_b = W1 * total_pob_b + W2 * total_kcob_b;
+var int: objetivo_b = W1 * total_pob_b + W2 * total_kcob_b;
 
 % %%%%%%%%%%%%%%%%%%%% Variables de Decisión %%%%%%%%%%%%%%%%%%%%
 
@@ -123,7 +123,6 @@ constraint objetivo_b > objetivo_a;
 % constraint objetivo_b > objetivo_inicial;
 
 solve maximize objetivo_b;
-% solve satisfy;
 
 %%%%%%%%%%%%%%%%%%%% Otros resultados de validación %%%%%%%%%%%%%%%%%%%%
 

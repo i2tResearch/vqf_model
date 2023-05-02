@@ -55,20 +55,18 @@ def run_vqf(api_url, username, password, maxpow, randomize, minsol, maxsolfactor
 
     actual_minSol = max(minsol, 1)
     actual_maxSol = int(project.number_of_points() * maxsolfactor / 100)
-    actual_wpob = wpob / 100
-    actual_wpts = wpts / 100
 
     print("Población aleatoria:", randomize)
     print("Puntos disponibles:", project.number_of_points())
     print("minSol:", actual_minSol)
     print("maxSol:", actual_maxSol)
-    print("W1 Peso Cantidad de población atendida:", actual_wpob)
-    print("W2 Peso Cantidad de puntos con cobertura:", actual_wpts)
+    print("W1 Peso Cantidad de población atendida:", wpob)
+    print("W2 Peso Cantidad de puntos con cobertura:", wpts)
 
     print("=================================================")
     print("Construyendo el optimizador... Puede tomar unos minutos mientras se calculan las distancias")
     optimizer = Optimizer(
-        project, "../../minizinc/models/vqf_okumura_hata.mzn", maxpow, randomize, actual_minSol, actual_maxSol, actual_wpob, actual_wpts)
+        project, "../../minizinc/models/vqf_okumura_hata.mzn", maxpow, randomize, actual_minSol, actual_maxSol, wpob, wpts)
     optimizer.build_parameters()
 
     print("Ejecutando el optimizador...")

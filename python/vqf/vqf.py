@@ -12,7 +12,7 @@ import random
 
 class Optimizer:
 
-    def __init__(self, project: Project, model_path: str, maxpow: float, randomize_pob: bool, minSol: int, maxSol: float, w1: float, w2: float):
+    def __init__(self, project: Project, model_path: str, maxpow: float, randomize_pob: bool, minSol: int, maxSol: float, w1: int, w2: int):
         self.project = project
         self.model_path = model_path
         self.maxpow = maxpow
