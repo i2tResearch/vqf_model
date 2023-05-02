@@ -7,14 +7,17 @@
 from minizinc import Instance, Model, Solver
 from models import Project
 from geopy import distance
+import random
 
 
 class Optimizer:
 
-    def __init__(self, project: Project, model_path: str, maxpow: float):
+    def __init__(self, project: Project, model_path: str, maxpow: float, randomize_pob: bool, minSol: int):
         self.project = project
         self.model_path = model_path
         self.maxpow = maxpow
+        self.randomize_pob = randomize_pob
+        self.minSol = minSol
 
         self.d_ik = []
         self.c_k = []
@@ -48,11 +51,11 @@ class Optimizer:
         # Distancia entre la i-ésima estación base y el k-ésimo punto de medición
         instance["d_ik"] = self.d_ik
         # Población que demanda servicio en el punto k. int
-        instance["pob_k"] = [1] * self.project.number_of_points()
+        instance["pob_k"] = [random.randint(0, 100) for _ in range(self.project.number_of_points())] if self.randomize_pob else [1] * self.project.number_of_points()
         # Número de Sectores disponibles para prestar el servicio. int
         instance["maxSol"] = self.project.number_of_points()
         # Número mínimo de sectores que deberían poder atender el servicio. int
-        instance["minSol"] = self.project.number_of_points() // 4
+        instance["minSol"] = max(self.minSol, 1)
         # Umbral a partir del cual se puede definir si un punto tiene o no cobertura, dado en dBm. float
         instance["UmbCob"] = self.project.threshold
         # Número de antenas por estación base. int

@@ -8,15 +8,13 @@ logging.basicConfig(filename="./tmp/vqf_logs.log", level=logging.DEBUG)
 
 
 @click.command()
-@click.option("--api_url", default="http://172.28.16.1:8080/api", help="Celgis Url")
-@click.option("--username", help="Celgis username")
-@click.option("--password", help="Celgis password")
-@click.option("--maxpow", default=100.0, help="Max allowed power")
-def run_vqf(api_url, username, password, maxpow):
-    if username is None or password is None:
-        username = click.prompt("Enter the username", type=str)
-        password = click.prompt("Enter the password", type=str)
-        maxpow = click.prompt("Enter max power", type=float)
+@click.option("--api_url", default="http://172.28.16.1:8080/api", help="URL de Celgis")
+@click.option("--username", help="Usuario Celgis")
+@click.option("--password", help="Contraseña de Celgis")
+@click.option("--maxpow", default=100.0, help="Máxima potencia permitida (dBm)")
+@click.option("--randomize", default=False, help="Población aleatoria (falso = 1 por punto)")
+@click.option("--minsol", default=10, help="Número mínimo de sectores que deberían poder atender el servicio")
+def run_vqf(api_url, username, password, maxpow, randomize, minsol):
 
     print("=================== ODISEO/VQF ==================")
     print("Using API endpoint", api_url)
@@ -28,6 +26,7 @@ def run_vqf(api_url, username, password, maxpow):
     celgis = Celgis(celgis_client)
 
     print("Celgis client is active")
+    print("Randomize population:", randomize)
 
     print("=================================================")
     print("Available projects:")
@@ -53,7 +52,7 @@ def run_vqf(api_url, username, password, maxpow):
     print("=================================================")
     print("Building optimizer... this will take some time while we calculate the distances")
     optimizer = Optimizer(
-        project, "../../minizinc/models/vqf_okumura_hata.mzn", maxpow)
+        project, "../../minizinc/models/vqf_okumura_hata.mzn", maxpow, randomize, minsol)
     optimizer.build_parameters()
 
     print("Running optimizer...")
