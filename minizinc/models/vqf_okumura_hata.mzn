@@ -33,9 +33,9 @@ float: UmbCob;
 int: P;
 set of int: h = 1..P;
 % Peso del objetivo Cantidad de población atendida
-int: W1 = 1;
+float: W1;
 % Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido
-int: W2 = 1;
+float: W2;
 % Potencia máxima permitida
 float: maxPot;
 % Altura del terminal de usuario
@@ -120,9 +120,10 @@ constraint total_kcob_b <= maxSol;
 
 % Un mejor objetivo
 constraint objetivo_b > objetivo_a;
-constraint objetivo_b > objetivo_inicial;
+% constraint objetivo_b > objetivo_inicial;
 
 solve maximize objetivo_b;
+% solve satisfy;
 
 %%%%%%%%%%%%%%%%%%%% Otros resultados de validación %%%%%%%%%%%%%%%%%%%%
 

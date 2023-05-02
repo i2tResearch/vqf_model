@@ -12,13 +12,15 @@ import random
 
 class Optimizer:
 
-    def __init__(self, project: Project, model_path: str, maxpow: float, randomize_pob: bool, minSol: int, maxSol: float):
+    def __init__(self, project: Project, model_path: str, maxpow: float, randomize_pob: bool, minSol: int, maxSol: float, w1: float, w2: float):
         self.project = project
         self.model_path = model_path
         self.maxpow = maxpow
         self.randomize_pob = randomize_pob
         self.minSol = minSol
         self.maxSol = maxSol
+        self.w1 = w1
+        self.w2 = w2
 
         self.d_ik = []
         self.c_k = []
@@ -63,9 +65,9 @@ class Optimizer:
         # Supone que todos los sitios tienen el mismo número de antenas
         instance["P"] = len(self.project.sites[0].transmitters)
         # Peso del objetivo Cantidad de población atendida
-        instance["W1"] = 1
+        instance["W1"] = self.w1
         # Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido
-        instance["W2"] = 1
+        instance["W2"] = self.w2
         # Potencia máxima permitida
         instance["maxPot"] = self.maxpow
         # Altura del terminal de usuario

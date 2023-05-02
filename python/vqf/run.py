@@ -14,8 +14,10 @@ logging.basicConfig(filename="./tmp/vqf_logs.log", level=logging.DEBUG)
 @click.option("--maxpow", default=100.0, help="Máxima potencia permitida (dBm)")
 @click.option("--randomize", default=False, help="Población aleatoria (falso = 1 por punto)")
 @click.option("--minsol", default=10, help="Número mínimo de sectores que deberían poder atender el servicio")
-@click.option("--maxsolfactor", default=1.0, help="Máximo porcentaje de sectores que deberían poder atender el servicio (1.0 = 100%)")
-def run_vqf(api_url, username, password, maxpow, randomize, minsol, maxsolfactor):
+@click.option("--maxsolfactor", default=100, help="Máximo porcentaje de sectores que deberían poder atender el servicio (1-100)")
+@click.option("--wpob", default=1, help="Peso del objetivo Cantidad de población atendida (0-100)")
+@click.option("--wpts", default=1, help="Peso del objetivo Cantidad de puntos con cobertura superior al mínimo definido (0-100)")
+def run_vqf(api_url, username, password, maxpow, randomize, minsol, maxsolfactor, wpob, wpts):
 
     print("=================== ODISEO/VQF ==================")
     print("Usando la URL de Celgis", api_url)
@@ -52,17 +54,21 @@ def run_vqf(api_url, username, password, maxpow, randomize, minsol, maxsolfactor
     print("=================================================")
 
     actual_minSol = max(minsol, 1)
-    actual_maxSol = int(project.number_of_points() * maxsolfactor)
+    actual_maxSol = int(project.number_of_points() * maxsolfactor / 100)
+    actual_wpob = wpob / 100
+    actual_wpts = wpts / 100
 
     print("Población aleatoria:", randomize)
     print("Puntos disponibles:", project.number_of_points())
     print("minSol:", actual_minSol)
     print("maxSol:", actual_maxSol)
+    print("W1 Peso Cantidad de población atendida:", actual_wpob)
+    print("W2 Peso Cantidad de puntos con cobertura:", actual_wpts)
 
     print("=================================================")
     print("Construyendo el optimizador... Puede tomar unos minutos mientras se calculan las distancias")
     optimizer = Optimizer(
-        project, "../../minizinc/models/vqf_okumura_hata.mzn", maxpow, randomize, actual_minSol, actual_maxSol)
+        project, "../../minizinc/models/vqf_okumura_hata.mzn", maxpow, randomize, actual_minSol, actual_maxSol, actual_wpob, actual_wpts)
     optimizer.build_parameters()
 
     print("Ejecutando el optimizador...")
